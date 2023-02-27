@@ -27,7 +27,7 @@
     '''
 ## Author
 
-👤**Trung Hau, Nguyen Khoi**
+👤**Trung Hau, Hoang Khoi**
 
 
 ## 🤝 Thank you for reading ❤️

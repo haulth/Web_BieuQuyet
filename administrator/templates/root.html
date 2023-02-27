@@ -17,14 +17,14 @@
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title"><b>Configure</b></h4>
+            <h4 class="modal-title"><b>Cấu hình</b></h4>
           </div>
           <div class="modal-body">
             <div class="text-center">
                               <form class="form-horizontal" method="POST" action="{% url 'ballot_title'  %}">
                 <div class="form-group">
                   {% csrf_token %}
-                  <label for="title" class="col-sm-3 control-label">Title</label>
+                  <label for="title" class="col-sm-3 control-label">Tiêu đề</label>
 
                   <div class="col-sm-9">
                     <input type="text" class="form-control" required id="title" name="title" value="{{ TITLE }}">
@@ -33,8 +33,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-danger btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
-            <button type="submit" class="btn btn-success btn-flat" name="save"><i class="fa fa-save"></i> Save</button>
+            <button type="button" class="btn btn-danger btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Đóng</button>
+            <button type="submit" class="btn btn-success btn-flat" name="save"><i class="fa fa-save"></i> Lưu</button>
             </form>
           </div>
       </div>
@@ -48,7 +48,7 @@
         {{ page_title }}
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#"><i class="fa fa-dashboard"></i> Trang chủ</a></li>
         <li class="active">{{ page_title }}</li>
       </ol>
     </section>

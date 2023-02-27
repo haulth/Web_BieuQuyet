@@ -9,7 +9,7 @@
       </div>
       <div class="pull-left info">
         <p>{{ request.user }}</p>
-        <a><i class="fa fa-circle text-success"></i> Online</a>
+        <a><i class="fa fa-circle text-success"></i> Đang hoạt động</a>
       </div>
     </div>
     <!-- sidebar menu: : style can be found in sidebar.less -->
@@ -17,21 +17,21 @@
       {% if request.user.user_type == '1' %}
   
       
-      <li class="header">REPORTS</li>
-      <li class=""><a href="{% url 'adminDashboard' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
-      <li class=""><a href="{% url 'viewVotes' %}"><span class="glyphicon glyphicon-lock"></span> <span>Votes</span></a></li>
-      <li class="header">MANAGE</li>
-      <li class=""><a href="{% url 'adminViewVoters' %}"><i class="fa fa-users"></i> <span>Voters</span></a></li>
-      <li class=""><a href="{% url 'viewPositions' %}"><i class="fa fa-tasks"></i> <span>Positions</span></a></li>
-      <li class=""><a href="{% url 'viewCandidates' %}"><i class="fa fa-black-tie"></i> <span>Candidates</span></a></li>
-      <li class="header">SETTINGS</li>
-      <li class=""><a href="{% url 'ballot_position' %}"><i class="fa fa-file-text"></i> <span>Ballot Position</span></a></li>
-      <li class=""><a href="#config" data-toggle="modal"><i class="fa fa-font"></i> <span>Election Title</span></a></li>
+      <li class="header">Thống Kê</li>
+      <li class=""><a href="{% url 'adminDashboard' %}"><i class="fa fa-dashboard"></i> <span>Điều Khiển</span></a></li>
+      <li class=""><a href="{% url 'viewVotes' %}"><span class="glyphicon glyphicon-lock"></span> <span>Kết Quả Bỏ Phiếu</span></a></li>
+      <li class="header">Thiết Lập Bình Chọn</li>
+      <li class=""><a href="{% url 'adminViewVoters' %}"><i class="fa fa-users"></i> <span>Danh Sách Bỏ Phiếu</span></a></li>
+      <li class=""><a href="{% url 'viewPositions' %}"><i class="fa fa-tasks"></i> <span>Tùy Chỉnh Loại</span></a></li>
+      <li class=""><a href="{% url 'viewCandidates' %}"><i class="fa fa-black-tie"></i> <span>Ứng Cử Viên</span></a></li>
+      <li class="header">Cài Đặt</li>
+      <li class=""><a href="{% url 'ballot_position' %}"><i class="fa fa-file-text"></i> <span>Xem Trước Mẫu</span></a></li>
+      <li class=""><a href="#config" data-toggle="modal"><i class="fa fa-font"></i> <span>Tùy Chỉnh Tiêu Đề</span></a></li>
             
       {% endif %}
         
-      <li class="header">EXIT</li>
-      <li class=""><a href="{% url 'account_logout' %}"><i class="fa fa-power-off"></i> <span>Logout</span></a></li>
+      <li class="header">Thoát</li>
+      <li class=""><a href="{% url 'account_logout' %}"><i class="fa fa-power-off"></i> <span>Đăng Xuất</span></a></li>
 
     </ul>
   </section>

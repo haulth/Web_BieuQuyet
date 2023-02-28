@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, reverse, redirect
 from voting.models import Voter, Position, Candidate, Votes
 from account.models import CustomUser
@@ -44,7 +45,7 @@ class PrintView(PDFView):
     def get_context_data(self, *args, **kwargs):
         title = "E-voting"
         try:
-            file = open(settings.ELECTION_TITLE_PATH, 'r')
+            file = open(settings.ELECTION_TITLE_PATH, 'r', encoding='utf-8')
             title = file.read()
         except:
             pass
@@ -369,7 +370,7 @@ def ballot_title(request):
     try:
         redirect_url = resolve(url)
         title = request.POST.get('title', 'Không Tên')
-        file = open(settings.ELECTION_TITLE_PATH, 'w')
+        file = open(settings.ELECTION_TITLE_PATH, 'w', encoding='utf-8')
         file.write(title)
         file.close()
         messages.success(

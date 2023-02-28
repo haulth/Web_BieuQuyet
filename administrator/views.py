@@ -24,7 +24,7 @@ def find_n_winners(data, n):
         this_winner = max(candidate_data, key=lambda x: x['votes'])
         # TODO: Check if None
         this = this_winner['name'] + \
-            " with " + str(this_winner['votes']) + " votes"
+            " với " + str(this_winner['votes']) + " lượt bình chọn"
         final_list.append(this)
         candidate_data.remove(this_winner)
     return ", &nbsp;".join(final_list)
@@ -36,7 +36,7 @@ class PrintView(PDFView):
 
     @property
     def download_name(self):
-        return "result.pdf"
+        return "Tongket.pdf"
 
     def get_context_data(self, *args, **kwargs):
         title = "E-voting"
@@ -60,7 +60,7 @@ class PrintView(PDFView):
                 position.name), " = ", str(candidate_data))
             # ! Check Winner
             if len(candidate_data) < 1:
-                winner = "Position does not have candidates"
+                winner = "Vị trí chưa có ứng viên"
             else:
                 # Check if max_vote is more than 1
                 if position.max_vote > 1:
@@ -69,7 +69,7 @@ class PrintView(PDFView):
 
                     winner = max(candidate_data, key=lambda x: x['votes'])
                     if winner['votes'] == 0:
-                        winner = "No one voted for this yet position, yet."
+                        winner = "Chưa có ai bỏ phiếu cho vị trí này."
                     else:
                         """
                         https://stackoverflow.com/questions/18940540/how-can-i-count-the-occurrences-of-an-item-in-a-list-of-dictionaries
@@ -77,9 +77,9 @@ class PrintView(PDFView):
                         count = sum(1 for d in candidate_data if d.get(
                             'votes') == winner['votes'])
                         if count > 1:
-                            winner = f"There are {count} candidates with {winner['votes']} votes"
+                            winner = f"Có {count} ứng cử viên với {winner['votes']} phiếu bầu"
                         else:
-                            winner = "Winner : " + winner['name']
+                            winner = "Người đắt cử : " + winner['name']
             print("Candidate Data For  ", str(
                 position.name), " = ", str(candidate_data))
             position_data[position.name] = {
@@ -118,7 +118,7 @@ def dashboard(request):
         'voted_voters_count': voted_voters.count(),
         'positions': positions,
         'chart_data': chart_data,
-        'page_title': "Dashboard"
+        'page_title': "Bảng điều khiển"
     }
     return render(request, "admin/home.html", context)
 
@@ -131,7 +131,7 @@ def voters(request):
         'form1': userForm,
         'form2': voterForm,
         'voters': voters,
-        'page_title': 'Voters List'
+        'page_title': 'Danh Sách Bỏ Phiếu'
     }
     if request.method == 'POST':
         if userForm.is_valid() and voterForm.is_valid():
@@ -140,9 +140,9 @@ def voters(request):
             voter.admin = user
             user.save()
             voter.save()
-            messages.success(request, "New voter created")
+            messages.success(request, "Người bỏ phiếu mới được tạo")
         else:
-            messages.error(request, "Form validation failed")
+            messages.error(request, "Xác thực biểu mẫu không thành công")
     return render(request, "admin/voters.html", context)
 
 
@@ -180,29 +180,29 @@ def view_position_by_id(request):
 
 def updateVoter(request):
     if request.method != 'POST':
-        messages.error(request, "Access Denied")
+        messages.error(request, "Truy cập bị từ chối")
     try:
         instance = Voter.objects.get(id=request.POST.get('id'))
         user = CustomUserForm(request.POST or None, instance=instance.admin)
         voter = VoterForm(request.POST or None, instance=instance)
         user.save()
         voter.save()
-        messages.success(request, "Voter's bio updated")
+        messages.success(request, "Cập nhật tiểu sử ứng cử viên")
     except:
-        messages.error(request, "Access To This Resource Denied")
+        messages.error(request, "Quyền truy cập vào tài nguyên này bị từ chối")
 
     return redirect(reverse('adminViewVoters'))
 
 
 def deleteVoter(request):
     if request.method != 'POST':
-        messages.error(request, "Access Denied")
+        messages.error(request, "Truy cập bị từ chối")
     try:
         admin = Voter.objects.get(id=request.POST.get('id')).admin
         admin.delete()
-        messages.success(request, "Voter Has Been Deleted")
+        messages.success(request, "Ứng cử viên đã bị xóa")
     except:
-        messages.error(request, "Access To This Resource Denied")
+        messages.error(request, "Quyền truy cập vào tài nguyên này bị từ chối")
 
     return redirect(reverse('adminViewVoters'))
 
@@ -213,42 +213,42 @@ def viewPositions(request):
     context = {
         'positions': positions,
         'form1': form,
-        'page_title': "Positions"
+        'page_title': "Loại bình chọn"
     }
     if request.method == 'POST':
         if form.is_valid():
             form = form.save(commit=False)
             form.priority = positions.count() + 1  # Just in case it is empty.
             form.save()
-            messages.success(request, "New Position Created")
+            messages.success(request, "Đã Tạo Bình Chọn Mới")
         else:
-            messages.error(request, "Form errors")
+            messages.error(request, "Lỗi biểu mẫu")
     return render(request, "admin/positions.html", context)
 
 
 def updatePosition(request):
     if request.method != 'POST':
-        messages.error(request, "Access Denied")
+        messages.error(request, "Truy cập bị từ chối")
     try:
         instance = Position.objects.get(id=request.POST.get('id'))
         pos = PositionForm(request.POST or None, instance=instance)
         pos.save()
-        messages.success(request, "Position has been updated")
+        messages.success(request, "Bình chọn đã được cập nhật")
     except:
-        messages.error(request, "Access To This Resource Denied")
+        messages.error(request, "Quyền truy cập vào tài nguyên này bị từ chối")
 
     return redirect(reverse('viewPositions'))
 
 
 def deletePosition(request):
     if request.method != 'POST':
-        messages.error(request, "Access Denied")
+        messages.error(request, "Truy cập bị từ chối")
     try:
         pos = Position.objects.get(id=request.POST.get('id'))
         pos.delete()
-        messages.success(request, "Position Has Been Deleted")
+        messages.success(request, "Bình chọn đã bị xóa")
     except:
-        messages.error(request, "Access To This Resource Denied")
+        messages.error(request, "Quyền truy cập vào tài nguyên này bị từ chối")
 
     return redirect(reverse('viewPositions'))
 
@@ -259,20 +259,20 @@ def viewCandidates(request):
     context = {
         'candidates': candidates,
         'form1': form,
-        'page_title': 'Candidates'
+        'page_title': 'Ứng cử viên'
     }
     if request.method == 'POST':
         if form.is_valid():
             form = form.save()
-            messages.success(request, "New Candidate Created")
+            messages.success(request, "Ứng viên mới được tạo")
         else:
-            messages.error(request, "Form errors")
+            messages.error(request, "Lỗi biểu mẫu")
     return render(request, "admin/candidates.html", context)
 
 
 def updateCandidate(request):
     if request.method != 'POST':
-        messages.error(request, "Access Denied")
+        messages.error(request, "Truy cập bị từ chối")
     try:
         candidate_id = request.POST.get('id')
         candidate = Candidate.objects.get(id=candidate_id)
@@ -280,24 +280,24 @@ def updateCandidate(request):
                              request.FILES or None, instance=candidate)
         if form.is_valid():
             form.save()
-            messages.success(request, "Candidate Data Updated")
+            messages.success(request, "Cập nhật dữ liệu ứng viên")
         else:
-            messages.error(request, "Form has errors")
+            messages.error(request, "Biểu mẫu có lỗi")
     except:
-        messages.error(request, "Access To This Resource Denied")
+        messages.error(request, "Quyền truy cập vào tài nguyên này bị từ chối")
 
     return redirect(reverse('viewCandidates'))
 
 
 def deleteCandidate(request):
     if request.method != 'POST':
-        messages.error(request, "Access Denied")
+        messages.error(request, "Truy cập bị từ chối")
     try:
         pos = Candidate.objects.get(id=request.POST.get('id'))
         pos.delete()
-        messages.success(request, "Candidate Has Been Deleted")
+        messages.success(request, "Ứng viên đã bị xóa")
     except:
-        messages.error(request, "Access To This Resource Denied")
+        messages.error(request, "Quyền truy cập vào tài nguyên này bị từ chối")
 
     return redirect(reverse('viewCandidates'))
 
@@ -319,7 +319,7 @@ def view_candidate_by_id(request):
 
 def ballot_position(request):
     context = {
-        'page_title': "Ballot Position"
+        'page_title': "Vị trí lá phiếu"
     }
     return render(request, "admin/ballot_position.html", context)
 
@@ -334,24 +334,24 @@ def update_ballot_position(request, position_id, up_or_down):
             priority = position.priority - 1
             if priority == 0:
                 context['error'] = True
-                output = "This position is already at the top"
+                output = "Vị trí này đã ở trên cùng"
             else:
                 Position.objects.filter(priority=priority).update(
                     priority=(priority+1))
                 position.priority = priority
                 position.save()
-                output = "Moved Up"
+                output = "Ở trên"
         else:
             priority = position.priority + 1
             if priority > Position.objects.all().count():
-                output = "This position is already at the bottom"
+                output = "Vị trí này đã ở dưới cùng"
                 context['error'] = True
             else:
                 Position.objects.filter(priority=priority).update(
                     priority=(priority-1))
                 position.priority = priority
                 position.save()
-                output = "Moved Down"
+                output = "Ở dưới"
         context['message'] = output
     except Exception as e:
         context['message'] = e
@@ -365,12 +365,12 @@ def ballot_title(request):
     from django.urls import resolve
     try:
         redirect_url = resolve(url)
-        title = request.POST.get('title', 'No Name')
+        title = request.POST.get('title', 'Không Tên')
         file = open(settings.ELECTION_TITLE_PATH, 'w')
         file.write(title)
         file.close()
         messages.success(
-            request, "Election title has been changed to " + str(title))
+            request, "Tiêu đề bầu cử đã được thay đổi thành " + str(title))
         return redirect(url)
     except Exception as e:
         messages.error(request, e)
@@ -381,7 +381,7 @@ def viewVotes(request):
     votes = Votes.objects.all()
     context = {
         'votes': votes,
-        'page_title': 'Votes'
+        'page_title': 'Phiếu bầu'
     }
     return render(request, "admin/votes.html", context)
 
@@ -389,5 +389,5 @@ def viewVotes(request):
 def resetVote(request):
     Votes.objects.all().delete()
     Voter.objects.all().update(voted=False, verified=False, otp=None)
-    messages.success(request, "All votes has been reset")
+    messages.success(request, "Tất cả phiếu bầu đã được đặt lại")
     return redirect(reverse('viewVotes'))

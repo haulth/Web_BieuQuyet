@@ -27,7 +27,7 @@ class CustomUserForm(FormSettings):
             for field in CustomUserForm.Meta.fields:
                 self.fields[field].initial = instance.get(field)
             if self.instance.pk is not None:
-                self.fields['password'].widget.attrs['placeholder'] = "Fill this only if you wish to update password"
+                self.fields['password'].widget.attrs['placeholder'] = "Điền vào đây nếu bạn muốn cập nhật mật khẩu"
         else:
             self.fields['first_name'].required = True
             self.fields['last_name'].required = True
@@ -37,14 +37,14 @@ class CustomUserForm(FormSettings):
         if self.instance.pk is None:  # Insert
             if CustomUser.objects.filter(email=formEmail).exists():
                 raise forms.ValidationError(
-                    "The given email is already registered")
+                    "Email được cung cấp đã được đăng ký")
         else:  # Update
             dbEmail = self.Meta.model.objects.get(
                 id=self.instance.pk).email.lower()
             if dbEmail != formEmail:  # There has been changes
                 if CustomUser.objects.filter(email=formEmail).exists():
                     raise forms.ValidationError(
-                        "The given email is already registered")
+                        "Email được cung cấp đã được đăng ký")
         return formEmail
 
     def clean_password(self):

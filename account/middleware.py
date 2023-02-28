@@ -16,12 +16,12 @@ class AccountCheckMiddleWare(MiddlewareMixin):
                         pass
                     else:
                         messages.error(
-                            request, "You do not have access to this resource")
+                            request, "Bạn không có quyền truy cập vào tài nguyên này")
                         return redirect(reverse('adminDashboard'))
             elif user.user_type == '2':  # Voter
                 if modulename == 'administrator.views':
                     messages.error(
-                        request, "You do not have access to this resource")
+                        request, "Bạn không có quyền truy cập vào tài nguyên này")
                     return redirect(reverse('voterDashboard'))
             else:  # None of the aforementioned ? Please take the user to login page
                 return redirect(reverse('account_login'))
@@ -32,7 +32,7 @@ class AccountCheckMiddleWare(MiddlewareMixin):
             elif modulename == 'administrator.views' or modulename == 'voting.views':
                 # If visitor tries to access administrator or voters functions
                 messages.error(
-                    request, "You need to be logged in to perform this operation")
+                    request, "Bạn cần đăng nhập để thực hiện thao tác này")
                 return redirect(reverse('account_login'))
             else:
                 return redirect(reverse('account_login'))

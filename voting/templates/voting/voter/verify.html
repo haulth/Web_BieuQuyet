@@ -27,7 +27,11 @@ aria-hidden="true">&times;</button>
               <p><span class="pull-right">
                       <a id="request_otp"
                           class="btn btn-success btn-sm btn-flat "><i
+<<<<<<< HEAD
                               class="fa fa-refresh"></i> Xác Thực OTP</a>
+=======
+                              class="fa fa-refresh"></i> Xác thực OTP</a>
+>>>>>>> acebabc956abf98c0373eed319709f30d10db6a1
                   </span>
               </p>
           </div>
@@ -42,7 +46,11 @@ aria-hidden="true">&times;</button>
               <span class="glyphicon glyphicon-lock form-control-feedback"></span>
           </div>
           <button type="submit" class="btn btn-primary btn-flat" name="verify"><i
+<<<<<<< HEAD
             class="fa fa-check-square-o"></i> Xác Thực OTP</button>
+=======
+            class="fa fa-check-square-o"></i> Xác minh OTP</button>
+>>>>>>> acebabc956abf98c0373eed319709f30d10db6a1
 </div>
     </div>
       </div>
@@ -66,16 +74,16 @@ aria-hidden="true">&times;</button>
           console.log(response.data)
           console.log(response)
           if (response.error){
-            toastr.error(response.data,"Error occurred while sending OTP");
+            toastr.error(response.data,"Xảy ra lỗi khi gửi OTP");
           }else{
 
-            toastr.success(response.data,"OTP Response");
+            toastr.success(response.data,"Phản hồi OTP");
           }
           button.attr("disabled",false);
 
         },
         error: function(response){
-          toastr.error("Please try again later", "Error")
+          toastr.error("Vui lòng thử lại sau", "Lỗi")
           button.attr("disabled",false);
 
         },

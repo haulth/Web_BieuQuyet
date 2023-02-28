@@ -27,7 +27,7 @@ def account_login(request):
             else:
                 return redirect(reverse("voterDashboard"))
         else:
-            messages.error(request, "Invalid details")
+            messages.error(request, "Thông tin không hợp lệ")
             return redirect("/")
 
     return render(request, "voting/login.html", context)
@@ -48,10 +48,10 @@ def account_register(request):
             voter.admin = user
             user.save()
             voter.save()
-            messages.success(request, "Account created. You can login now!")
+            messages.success(request, "Tài khoản đã được tạo. Bạn có thể đăng nhập ngay bây giờ!")
             return redirect(reverse('account_login'))
         else:
-            messages.error(request, "Provided data failed validation")
+            messages.error(request, "Xác thực dữ liệu được cung cấp không thành công")
             # return account_login(request)
     return render(request, "voting/reg.html", context)
 
@@ -60,9 +60,9 @@ def account_logout(request):
     user = request.user
     if user.is_authenticated:
         logout(request)
-        messages.success(request, "Thank you for visiting us!")
+        messages.success(request, "Cảm ơn bạn đã ghé thăm chúng tôi!")
     else:
         messages.error(
-            request, "You need to be logged in to perform this action")
+            request, "Bạn cần phải đăng nhập.")
 
     return redirect(reverse("account_login"))

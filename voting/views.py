@@ -32,13 +32,13 @@ def generate_ballot(display_controls=False):
         candidates = Candidate.objects.filter(position=position)
         for candidate in candidates:
             if position.max_vote > 1:
-                instruction = "You may select up to " + \
-                    str(position.max_vote) + " candidates"
+                instruction = "Bạn có thể chọn tối đa " + \
+                    str(position.max_vote) + " ứng cử viên"
                 input_box = '<input type="checkbox" value="'+str(candidate.id)+'" class="flat-red ' + \
                     position_name+'" name="' + \
                     position_name+"[]" + '">'
             else:
-                instruction = "Select only one candidate"
+                instruction = "Chỉ chọn một ứng cử viên"
                 input_box = '<input value="'+str(candidate.id)+'" type="radio" class="flat-red ' + \
                     position_name+'" name="'+position_name+'">'
             image = "/media/" + str(candidate.photo)
@@ -125,7 +125,7 @@ def dashboard(request):
 
 def verify(request):
     context = {
-        'page_title': 'OTP Verification'
+        'page_title': 'Xác minh OTP'
     }
     return render(request, "voting/voter/verify.html", context)
 
@@ -142,7 +142,7 @@ def resend_otp(request):
     if settings.SEND_OTP:
         if voter.otp_sent >= 3:
             error = True
-            response = "You have requested OTP three times. You cannot do this again! Please enter previously sent OTP"
+            response = "Bạn đã yêu cầu OTP ba lần. Bạn không thể làm điều này một lần nữa! Vui lòng nhập OTP đã gửi trước đó"
         else:
             phone = voter.phone
             # Now, check if an OTP has been generated previously for this voter
@@ -162,12 +162,12 @@ def resend_otp(request):
                     voter.otp_sent = voter.otp_sent + 1
                     voter.save()
 
-                    response = "OTP has been sent to your phone number. Please provide it in the box provided below"
+                    response = "OTP đã được gửi đến số điện thoại của bạn. Vui lòng cung cấp nó trong hộp được cung cấp bên dưới"
                 else:
                     error = True
-                    response = "OTP not sent. Please try again"
+                    response = "OTP không được gửi. Vui lòng thử lại"
             except Exception as e:
-                response = "OTP could not be sent." + str(e)
+                response = "Không thể gửi OTP." + str(e)
 
                 # * Send OTP
     else:
@@ -180,7 +180,7 @@ def resend_otp(request):
 
 def bypass_otp():
     Voter.objects.all().filter(otp=None, verified=False).update(otp="0000", verified=True)
-    response = "Kindly cast your vote"
+    response = "Vui lòng bỏ phiếu bầu của bạn"
     return response
 
 
@@ -212,20 +212,20 @@ def send_sms(phone_number, msg):
 def verify_otp(request):
     error = True
     if request.method != 'POST':
-        messages.error(request, "Access Denied")
+        messages.error(request, "Truy cập bị từ chối")
     else:
         otp = request.POST.get('otp')
         if otp is None:
-            messages.error(request, "Please provide valid OTP")
+            messages.error(request, "Vui lòng cung cấp OTP hợp lệ")
         else:
             # Get User OTP
             voter = request.user.voter
             db_otp = voter.otp
             if db_otp != otp:
-                messages.error(request, "Provided OTP is not valid")
+                messages.error(request, "OTP đã cung cấp không hợp lệ")
             else:
                 messages.success(
-                    request, "You are now verified. Please cast your vote")
+                    request, "Bây giờ bạn đã được xác minh. Hãy bỏ phiếu của bạn")
                 voter.verified = True
                 voter.save()
                 error = False
@@ -236,7 +236,7 @@ def verify_otp(request):
 
 def show_ballot(request):
     if request.user.voter.voted:
-        messages.error(request, "You have voted already")
+        messages.error(request, "Bạn đã bình chọn rồi")
         return redirect(reverse('voterDashboard'))
     ballot = generate_ballot(display_controls=False)
     context = {
@@ -248,7 +248,7 @@ def show_ballot(request):
 def preview_vote(request):
     if request.method != 'POST':
         error = True
-        response = "Please browse the system properly"
+        response = "Vui lòng duyệt hệ thống đúng cách"
     else:
         output = ""
         form = dict(request.POST)
@@ -268,8 +268,8 @@ def preview_vote(request):
                     continue
                 if len(form_position) > max_vote:
                     error = True
-                    response = "You can only choose " + \
-                        str(max_vote) + " candidates for " + position.name
+                    response = "Bạn chỉ có thể chọn " + \
+                        str(max_vote) + " ứng cử viên cho " + position.name
                 else:
                     # for key, value in form.items():
                     start_tag = f"""
@@ -291,7 +291,7 @@ def preview_vote(request):
                             """
                         except:
                             error = True
-                            response = "Please, browse the system properly"
+                            response = "Xin vui lòng, duyệt hệ thống đúng cách"
                     output += start_tag + data + end_tag
             else:
                 this_key = pos
@@ -312,7 +312,7 @@ def preview_vote(request):
                     """
                 except Exception as e:
                     error = True
-                    response = "Please, browse the system properly"
+                    response = "Xin vui lòng, duyệt hệ thống đúng cách"
     context = {
         'error': error,
         'list': output
@@ -322,13 +322,13 @@ def preview_vote(request):
 
 def submit_ballot(request):
     if request.method != 'POST':
-        messages.error(request, "Please, browse the system properly")
+        messages.error(request, "Xin vui lòng, duyệt hệ thống đúng cách")
         return redirect(reverse('show_ballot'))
 
     # Verify if the voter has voted or not
     voter = request.user.voter
     if voter.voted:
-        messages.error(request, "You have voted already")
+        messages.error(request, "Bạn đã bình chọn rồi")
         return redirect(reverse('voterDashboard'))
 
     form = dict(request.POST)
@@ -337,7 +337,7 @@ def submit_ballot(request):
 
     # Ensure at least one vote is selected
     if len(form.keys()) < 1:
-        messages.error(request, "Please select at least one candidate")
+        messages.error(request, "Vui lòng chọn ít nhất một ứng viên")
         return redirect(reverse('show_ballot'))
     positions = Position.objects.all()
     form_count = 0
@@ -351,8 +351,8 @@ def submit_ballot(request):
             if form_position is None:
                 continue
             if len(form_position) > max_vote:
-                messages.error(request, "You can only choose " +
-                               str(max_vote) + " candidates for " + position.name)
+                messages.error(request, "Bạn chỉ có thể chọn " +
+                               str(max_vote) + " ứng cử viên cho " + position.name)
                 return redirect(reverse('show_ballot'))
             else:
                 for form_candidate_id in form_position:
@@ -367,7 +367,7 @@ def submit_ballot(request):
                         vote.save()
                     except Exception as e:
                         messages.error(
-                            request, "Please, browse the system properly " + str(e))
+                            request, "Xin vui lòng, duyệt hệ thống đúng cách " + str(e))
                         return redirect(reverse('show_ballot'))
         else:
             this_key = pos
@@ -387,7 +387,7 @@ def submit_ballot(request):
                 vote.save()
             except Exception as e:
                 messages.error(
-                    request, "Please, browse the system properly " + str(e))
+                    request, "Xin vui lòng, duyệt hệ thống đúng cách " + str(e))
                 return redirect(reverse('show_ballot'))
     # Count total number of records inserted
     # Check it viz-a-viz form_count
@@ -395,11 +395,11 @@ def submit_ballot(request):
     if (inserted_votes.count() != form_count):
         # Delete
         inserted_votes.delete()
-        messages.error(request, "Please try voting again!")
+        messages.error(request, "Vui lòng thử bỏ phiếu lại!")
         return redirect(reverse('show_ballot'))
     else:
         # Update Voter profile to voted
         voter.voted = True
         voter.save()
-        messages.success(request, "Thanks for voting")
+        messages.success(request, "Cảm ơn đã bỏ phiếu")
         return redirect(reverse('voterDashboard'))

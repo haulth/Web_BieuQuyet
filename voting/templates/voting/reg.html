@@ -3,7 +3,7 @@
 
     <div class="login-box">
         <div class="login-logo">
-            <b>Voting System</b>
+            <b>Hệ Thống Bỏ Phiếu</b>
         </div>
 
         <div class="login-box-body">
@@ -35,10 +35,10 @@
                     <div class="row">
                         <div class="col-xs-6">
                             <button type="submit" class="btn btn-primary btn-block btn-flat" name="login"><i
-                                    class="fa fa-user-plus"></i> Register</button>
+                                    class="fa fa-user-plus"></i> Đăng ký</button>
                         </div>
                         <div class="pull-right col-xs-6">
-                            <a  class="btn btn-success btn-block btn-flat" href="{% url 'account_login' %}"><i class="fa fa-sign-in"></i> Log In</a>
+                            <a  class="btn btn-success btn-block btn-flat" href="{% url 'account_login' %}"><i class="fa fa-sign-in"></i> Đăng nhập</a>
                         </div>
                     </div> 
                 </div>
@@ -55,7 +55,7 @@
                     {% csrf_token %}
 
                     <div class="modal-header">
-                        <p class="modal-title" id="register">Create New Account <span class="float-right">
+                        <p class="modal-title" id="register">Tạo tài khoản <span class="float-right">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -84,10 +84,10 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="none" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        <button type="none" class="btn btn-danger" data-dismiss="modal">Đóng</button>
                         <button type="submit" name="reg"
-                            onclick="return confirm('Are you sure the details provided are correct?\nYou will NOT be allowed to make modifications.')"
-                            class="btn btn-success">Save</button>
+                            onclick="return confirm('Bạn có chắc chắn các thông tin được cung cấp là chính xác?\nBạn sẽ không được phép sửa đổi.')"
+                            class="btn btn-success">Lưu</button>
                     </div>
             </div>
             </form>

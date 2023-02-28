@@ -34,6 +34,9 @@ urlpatterns = [
     path('votes/print/', views.PrintView.as_view(), name='printResult'),
 
 
+    
+
+
 
 
 ]

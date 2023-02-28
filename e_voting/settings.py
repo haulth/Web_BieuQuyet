@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'account.apps.AccountConfig',
     'voting.apps.VotingConfig',
     'administrator.apps.AdministratorConfig',
+    'bieu_quyet.apps.BieuQuyetConfig',
+    
 ]
 
 MIDDLEWARE = [

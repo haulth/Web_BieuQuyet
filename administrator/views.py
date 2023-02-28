@@ -9,6 +9,7 @@ from django.conf import settings
 import json  # Not used
 from django_renderpdf.views import PDFView
 
+import time
 
 def find_n_winners(data, n):
     """Read More
@@ -36,7 +37,9 @@ class PrintView(PDFView):
 
     @property
     def download_name(self):
-        return "Tongket.pdf"
+        named_tuple = time.localtime() # lấy struct_time
+        time_string = time.strftime("%d/%m/%Y", named_tuple)
+        return "Ketqua_{}.pdf".format(time_string)
 
     def get_context_data(self, *args, **kwargs):
         title = "E-voting"
@@ -79,7 +82,7 @@ class PrintView(PDFView):
                         if count > 1:
                             winner = f"Có {count} ứng cử viên với {winner['votes']} phiếu bầu"
                         else:
-                            winner = "Người đắt cử : " + winner['name']
+                            winner = "Người có số lượt cao nhất : " + winner['name']
             print("Candidate Data For  ", str(
                 position.name), " = ", str(candidate_data))
             position_data[position.name] = {

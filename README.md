@@ -1,5 +1,5 @@
 # 📃Web_BieuQuyet
- <h1 align="center">Web</h1> 
+ <h1 align="center">Hệ Thống Bỏ Phiếu</h1> 
 
 ## :star2: About the Project
 

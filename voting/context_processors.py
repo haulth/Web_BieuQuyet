@@ -3,9 +3,9 @@ from django.conf import settings
 
 def ElectionTitle(request):
     context = {}
-    title = "No Title Yet"
+    title = "Chưa có tiêu đề"
     try:
-        file = open(settings.ELECTION_TITLE_PATH, 'r')
+        file = open(settings.ELECTION_TITLE_PATH, 'r', encoding='utf-8')
         title = file.read()
     except:
         pass

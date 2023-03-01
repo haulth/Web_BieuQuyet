@@ -11,8 +11,8 @@
   function startTimer(duration, display) {
     var timer = duration, minutes, seconds;
     setInterval(function () {
-        minutes = parseInt(timer / 80, 10);
-        seconds = parseInt(timer % 80, 10);
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
 
         minutes = minutes < 10 ? "0" + minutes : minutes;
         seconds = seconds < 10 ? "0" + seconds : seconds;
@@ -23,14 +23,14 @@
             timer = duration;
             alert('Hết thời gian bình chọn!');
             timer = stop;
-            window.location="https://www.google.com/";
-            
+            //window.location="https://www.google.com/";\
+            lockVoting();            
         }
     }, 1000);
     
 }
 window.onload = function () {
-    var fiveMinutes = 60 * 5,
+    var fiveMinutes = 60 * 3,
         display = document.querySelector('#time');
     startTimer(fiveMinutes, display);
     
@@ -55,7 +55,7 @@ aria-hidden="true">&times;</button>
   <div class="text-center">
     <button type="button" class="btn btn-success btn-flat" id="preview"><i
             class="fa fa-file-text"></i> Xem Lại</button>
-    <button type="submit" class="btn btn-primary btn-flat" name="submit_vote"><i
+    <button type="submit" class="btn btn-primary btn-flat" id="voting-form-submit" name="submit_vote"><i
             class="fa fa-check-square-o"></i> Hoàn Thành </button>
 </div>
 </form>
@@ -67,8 +67,15 @@ aria-hidden="true">&times;</button>
 {% block custom_js %}
 
 <script>
-  alert('Chào mừng bạn đến cuộc bình chọn, thời gian bình chọn của bạn là 3p.')
-
+  alert('Chào mừng bạn đến cuộc bình chọn, thời gian bình chọn của bạn là 3 phút.')
+  function lockVoting() {
+    var form = document.getElementById("ballotForm");
+    var elements = form.elements;
+    for (var i = 0, len = elements.length; i < len; ++i) {
+        elements[i].disabled = true;
+    }
+    //document.getElementById("voting-form-submit").disabled = true;
+}
   $(function() {
       $('.content').iCheck({
           checkboxClass: 'icheckbox_flat-green',

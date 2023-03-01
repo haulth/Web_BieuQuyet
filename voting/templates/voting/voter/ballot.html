@@ -11,8 +11,8 @@
   function startTimer(duration, display) {
     var timer = duration, minutes, seconds;
     setInterval(function () {
-        minutes = parseInt(timer / 60, 10);
-        seconds = parseInt(timer % 60, 10);
+        minutes = parseInt(timer / 80, 10);
+        seconds = parseInt(timer % 80, 10);
 
         minutes = minutes < 10 ? "0" + minutes : minutes;
         seconds = seconds < 10 ? "0" + seconds : seconds;
@@ -67,7 +67,7 @@ aria-hidden="true">&times;</button>
 {% block custom_js %}
 
 <script>
-  alert('Chào mừng bạn đến cuộc bình chọn, thời gian bình chọn của bạn là 5p.')
+  alert('Chào mừng bạn đến cuộc bình chọn, thời gian bình chọn của bạn là 3p.')
 
   $(function() {
       $('.content').iCheck({

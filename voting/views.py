@@ -20,13 +20,17 @@ def index(request):
     # return render(request, "voting/login.html", context)
 
 
-def generate_ballot(display_controls=False):
+def generate_ballot(display_controls=True):
     positions = Position.objects.order_by('priority').all()
     output = ""
     candidates_data = ""
     num = 1
     # return None
-    for position in positions:
+    hide = 0
+    for position in positions:        
+        if position.max_vote < 1:
+            hide+=1
+            output=''
         name = position.name
         position_name = slugify(name)
         candidates = Candidate.objects.filter(position=position)
@@ -37,19 +41,21 @@ def generate_ballot(display_controls=False):
                 input_box = '<input type="checkbox" value="'+str(candidate.id)+'" class="flat-red ' + \
                     position_name+'" name="' + \
                     position_name+"[]" + '">'
+                
             else:
                 instruction = "Chỉ chọn một ứng cử viên"
                 input_box = '<input value="'+str(candidate.id)+'" type="radio" class="flat-red ' + \
                     position_name+'" name="'+position_name+'">'
             image = "/media/" + str(candidate.photo)
-            candidates_data = candidates_data + '<li>' + input_box + '<button type="button" class="btn btn-primary btn-sm btn-flat clist platform" data-fullname="'+candidate.fullname+'" data-bio="'+candidate.bio+'"><i class="fa fa-search"></i> Platform</button><img src="' + \
+            candidates_data = candidates_data + '<li>' + input_box + '<button type="button" class="btn btn-primary btn-sm btn-flat clist platform" data-fullname="'+candidate.fullname+'" data-bio="'+candidate.bio+'"><i class="fa fa-search"></i> Chi tiết</button><img src="' + \
                 image+'" height="100px" width="100px" class="clist"><span class="cname clist">' + \
                 candidate.fullname+'</span></li>'
         up = ''
         if position.priority == 1:
             up = 'disabled'
         down = ''
-        if position.priority == positions.count():
+
+        if position.priority == (positions.count()-hide):
             down = 'disabled'
         output = output + f"""<div class="row">	<div class="col-xs-12"><div class="box box-solid" id="{position.id}">
              <div class="box-header with-border">
@@ -85,8 +91,80 @@ def generate_ballot(display_controls=False):
     return output
 
 
+def generate_ballot_for_admin(display_controls=True):
+    positions = Position.objects.order_by('priority').all()
+    output = ""
+    candidates_data = ""
+    num = 1
+    # return None
+    hide = 0
+    for position in positions:        
+
+        name = position.name
+        position_name = slugify(name)
+        candidates = Candidate.objects.filter(position=position)
+        for candidate in candidates:
+            if position.max_vote > 1:
+                instruction = "Bạn có thể chọn tối đa " + \
+                    str(position.max_vote) + " ứng cử viên"
+                input_box = '<input type="checkbox" value="'+str(candidate.id)+'" class="flat-red ' + \
+                    position_name+'" name="' + \
+                    position_name+"[]" + '">'
+
+
+            else:
+                if position.max_vote < 1:
+                    instruction = "Bình chọn này không được hiển thị"
+                else:
+                    instruction = "Chỉ chọn một ứng cử viên"
+                input_box = '<input value="'+str(candidate.id)+'" type="radio" class="flat-red ' + \
+                    position_name+'" name="'+position_name+'">'
+            image = "/media/" + str(candidate.photo)
+            candidates_data = candidates_data + '<li>' + input_box + '<button type="button" class="btn btn-primary btn-sm btn-flat clist platform" data-fullname="'+candidate.fullname+'" data-bio="'+candidate.bio+'"><i class="fa fa-search"></i> Chi tiết</button><img src="' + \
+                image+'" height="100px" width="100px" class="clist"><span class="cname clist">' + \
+                candidate.fullname+'</span></li>'
+        up = ''
+        if position.priority == 1:
+            up = 'disabled'
+        down = ''
+
+        if position.priority == (positions.count()-hide):
+            down = 'disabled'
+        output = output + f"""<div class="row">	<div class="col-xs-12"><div class="box box-solid" id="{position.id}">
+             <div class="box-header with-border">
+            <h3 class="box-title"><b>{name}</b></h3>"""
+
+        if display_controls:
+            output = output + f""" <div class="pull-right box-tools">
+        <button type="button" class="btn btn-default btn-sm moveup" data-id="{position.id}" {up}><i class="fa fa-arrow-up"></i> </button>
+        <button type="button" class="btn btn-default btn-sm movedown" data-id="{position.id}" {down}><i class="fa fa-arrow-down"></i></button>
+        </div>"""
+
+        output = output + f"""</div>
+        <div class="box-body">
+        <p>{instruction}
+        <span class="pull-right">
+        <button type="button" class="btn btn-success btn-sm btn-flat reset" data-desc="{position_name}"><i class="fa fa-refresh"></i> Reset</button>
+        </span>
+        </p>
+        <div id="candidate_list">
+        <ul>
+        {candidates_data}
+        </ul>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
+        """
+        position.priority = num
+        position.save()
+        num = num + 1
+        candidates_data = ''
+    return output
+
 def fetch_ballot(request):
-    output = generate_ballot(display_controls=True)
+    output = generate_ballot_for_admin(display_controls=True)
     return JsonResponse(output, safe=False)
 
 
@@ -246,6 +324,7 @@ def show_ballot(request):
 
 
 def preview_vote(request):
+    pass
     if request.method != 'POST':
         error = True
         response = "Vui lòng duyệt hệ thống đúng cách"
@@ -293,18 +372,36 @@ def preview_vote(request):
                             error = True
                             response = "Xin vui lòng, duyệt hệ thống đúng cách"
                     output += start_tag + data + end_tag
-            else:
-                this_key = pos
-                form_position = form.get(this_key)
-                if form_position is None:
-                    continue
-                # Max Vote == 1
+            elif position.max_vote < 1:
                 try:
                     form_position = form_position[0]
                     candidate = Candidate.objects.get(
                         position=position, id=form_position)
                     output += f"""
                             <div class='row votelist' style='padding-bottom: 2px'>
+		                      	<span class='col-sm-4'><span class='pull-right'><b>{position.name} :</b></span></span>
+		                      	<span class='col-sm-8'><i class="fa fa-check-circle-o"></i> {candidate.fullname}</span>
+		                    </div>
+                      <hr/>
+                    """
+                except Exception as e:
+                    error = True
+                    response = "Xin vui lòng, duyệt hệ thống đúng cách"
+            else:
+                this_key = pos
+                form_position = form.get(this_key)
+                if form_position is None:
+                    continue
+                # Max Vote == 1
+
+                try:
+                    form_position = form_position[0]
+                    candidate = Candidate.objects.get(
+                        position=position, id=form_position)
+                    output += f"""
+                            <div class='row votelist' style='padding-bottom: 2px'>
+                                
+                                <h3>Bình chọn này đang ẩn</h3>
 		                      	<span class='col-sm-4'><span class='pull-right'><b>{position.name} :</b></span></span>
 		                      	<span class='col-sm-8'><i class="fa fa-check-circle-o"></i> {candidate.fullname}</span>
 		                    </div>

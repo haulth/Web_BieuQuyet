@@ -6,7 +6,7 @@
   <h1 class="page-header text-center title"><b>{{ TITLE }}</b></h1>
 
 <!-- set countdown timer -->
-<div style="text-align: center;">Thời gian bình chọn đếm ngược <span id="time">03:00</span></div>
+<div style="text-align: center;" id="showtime">Thời gian bình chọn đếm ngược <span id="time">03:00</span></div>
 <script>
   function startTimer(duration, display) {
     var timer = duration, minutes, seconds;
@@ -24,17 +24,44 @@
             alert('Hết thời gian bình chọn!');
             timer = stop;
             //window.location="https://www.google.com/";\
-            lockVoting();            
+            lockVoting();        
+            //test elements with id = showtime hide
+            //document.getElementById("showtime").style.display = "none";
+            // change text of elements with id = showtime
+            document.getElementById("showtime").innerHTML = "Đã hết thời gian bỏ phiếu";
+            document.getElementById("showtime").style.color = "red";
+            // hỏi khi người dùng tải lại trang
+            
+            
+
         }
     }, 1000);
     
-}
-window.onload = function () {
-    var fiveMinutes = 60 * 3,
-        display = document.querySelector('#time');
-    startTimer(fiveMinutes, display);
-    
-};
+  }
+  window.onload = function () {
+      var fiveMinutes = 60 * 1,
+          display = document.querySelector('#time');
+      startTimer(fiveMinutes, display);
+      
+  };
+
+  //chặn tải lại trang
+  function disableF5(e) { if ((e.which || e.keyCode) == 116 || (e.which || e.keyCode) == 82) e.preventDefault(); };
+    $(document).ready(function(){
+        $(document).on("keydown", disableF5);
+    });
+  function block(){
+    // Sử dụng beforeunload để hỏi người dùng có muốn rời khỏi trang không
+    window.addEventListener('beforeunload', function(e) {
+      e.preventDefault();
+      e.returnValue = '';
+    });
+    // Sử dụng unload để chuyển hướng người dùng đến trang khác khi họ cố tải lại trang
+    window.addEventListener('unload', function(e) {
+      window.location.href = 'https://google.com';
+      });
+    window.history.replaceState(null, null, window.location.href);
+  }
 
 </script>
 
@@ -68,14 +95,17 @@ aria-hidden="true">&times;</button>
 
 <script>
   alert('Chào mừng bạn đến cuộc bình chọn, thời gian bình chọn của bạn là 3 phút.')
+
   function lockVoting() {
     var form = document.getElementById("ballotForm");
     var elements = form.elements;
     for (var i = 0, len = elements.length; i < len; ++i) {
         elements[i].disabled = true;
+        //ẩn elements
+        elements[i].style.display = 'none';
     }
-    //document.getElementById("voting-form-submit").disabled = true;
-}
+  }
+
   $(function() {
       $('.content').iCheck({
           checkboxClass: 'icheckbox_flat-green',
@@ -128,6 +158,8 @@ aria-hidden="true">&times;</button>
       });
 
   });
+  block();
+  disableF5(e);
 </script>
 
 {% endblock custom_js %}
@@ -141,6 +173,7 @@ aria-hidden="true">&times;</button>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title"><b><span class="candidate"></b></h4>
+            
           </div>
           <div class="modal-body">
             <p id="plat_view"></p>

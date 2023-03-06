@@ -58,7 +58,8 @@
     });
     // Sử dụng unload để chuyển hướng người dùng đến trang khác khi họ cố tải lại trang
     window.addEventListener('unload', function(e) {
-      window.location.href = 'https://google.com';
+      // chuyển về trang đăng nhập
+      window.location.href = "{% url 'account_logout' %}";
       });
     window.history.replaceState(null, null, window.location.href);
   }

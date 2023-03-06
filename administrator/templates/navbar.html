@@ -27,8 +27,8 @@
             <li class="user-header">
               <img src="{% static 'images/userplaceholder.png' %}" class="img-circle" alt="User Image">
 
-              <p>
-                Tài Khoản                <small>Administrator</small>
+              <p id="acctext">
+                Tài Khoản                <small >Administrator</small>
               </p>
             </li>
             <li class="user-footer">
@@ -47,3 +47,10 @@
 </header>
  
 {% include "bio.html" %}
+<script>
+  //nếu request.type = 1 thì id="acctext" sẽ hiển thị "Administrator"
+  if (request.user.type  == 1) {
+    document.getElementById("acctext").innerHTML = "Tài Khoản                <small >Administrator</small>";
+  } else
+    document.getElementById("acctext").innerHTML = "Tài Khoản                <small >Cử tri</small>";
+</script>

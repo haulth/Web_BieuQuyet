@@ -132,7 +132,7 @@ aria-hidden="true">&times;</button>
           var form = $('#ballotForm').serialize();
           console.log(form);
           if (form.search("&") < 0 || form == '') {
-              toastr.error('Bạn phải bỏ phiếu cho ít nhất một ứng cử viên', "Lỗi xem trước");
+              toastr.error('Bạn phải bỏ phiếu cho ít nhất một đại biểu', "Lỗi xem trước");
           } else {
               $.ajax({
                   type: 'POST',

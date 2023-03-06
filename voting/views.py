@@ -37,13 +37,13 @@ def generate_ballot(display_controls=True):
         for candidate in candidates:
             if position.max_vote > 1:
                 instruction = "Bạn có thể chọn tối đa " + \
-                    str(position.max_vote) + " ứng cử viên"
+                    str(position.max_vote) + " đại biểu"
                 input_box = '<input type="checkbox" value="'+str(candidate.id)+'" class="flat-red ' + \
                     position_name+'" name="' + \
                     position_name+"[]" + '">'
                 
             else:
-                instruction = "Chỉ chọn một ứng cử viên"
+                instruction = "Chỉ chọn một đại biểu"
                 input_box = '<input value="'+str(candidate.id)+'" type="radio" class="flat-red ' + \
                     position_name+'" name="'+position_name+'">'
             image = "/media/" + str(candidate.photo)
@@ -106,7 +106,7 @@ def generate_ballot_for_admin(display_controls=True):
         for candidate in candidates:
             if position.max_vote > 1:
                 instruction = "Bạn có thể chọn tối đa " + \
-                    str(position.max_vote) + " ứng cử viên"
+                    str(position.max_vote) + " đại biểu"
                 input_box = '<input type="checkbox" value="'+str(candidate.id)+'" class="flat-red ' + \
                     position_name+'" name="' + \
                     position_name+"[]" + '">'
@@ -116,7 +116,7 @@ def generate_ballot_for_admin(display_controls=True):
                 if position.max_vote < 1:
                     instruction = "Bình chọn này không được hiển thị"
                 else:
-                    instruction = "Chỉ chọn một ứng cử viên"
+                    instruction = "Chỉ chọn một đại biểu"
                 input_box = '<input value="'+str(candidate.id)+'" type="radio" class="flat-red ' + \
                     position_name+'" name="'+position_name+'">'
             image = "/media/" + str(candidate.photo)
@@ -348,7 +348,7 @@ def preview_vote(request):
                 if len(form_position) > max_vote:
                     error = True
                     response = "Bạn chỉ có thể chọn " + \
-                        str(max_vote) + " ứng cử viên cho " + position.name
+                        str(max_vote) + " đại biểu cho " + position.name
                 else:
                     # for key, value in form.items():
                     start_tag = f"""
@@ -449,7 +449,7 @@ def submit_ballot(request):
                 continue
             if len(form_position) > max_vote:
                 messages.error(request, "Bạn chỉ có thể chọn " +
-                               str(max_vote) + " ứng cử viên cho " + position.name)
+                               str(max_vote) + " đại biểu cho " + position.name)
                 return redirect(reverse('show_ballot'))
             else:
                 for form_candidate_id in form_position:

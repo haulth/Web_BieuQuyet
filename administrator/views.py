@@ -81,7 +81,7 @@ class PrintView(PDFView):
                         count = sum(1 for d in candidate_data if d.get(
                             'votes') == winner['votes'])
                         if count > 1:
-                            winner = f"Có {count} ứng cử viên với {winner['votes']} phiếu bầu"
+                            winner = f"Có {count} đại biểu với {winner['votes']} phiếu bầu"
                         else:
                             winner = "Người có số lượt cao nhất : " + winner['name']
             print("Candidate Data For  ", str(
@@ -191,7 +191,7 @@ def updateVoter(request):
         voter = VoterForm(request.POST or None, instance=instance)
         user.save()
         voter.save()
-        messages.success(request, "Cập nhật tiểu sử ứng cử viên")
+        messages.success(request, "Cập nhật tiểu sử đại biểu")
     except:
         messages.error(request, "Quyền truy cập vào tài nguyên này bị từ chối")
 
@@ -204,7 +204,7 @@ def deleteVoter(request):
     try:
         admin = Voter.objects.get(id=request.POST.get('id')).admin
         admin.delete()
-        messages.success(request, "Ứng cử viên đã bị xóa")
+        messages.success(request, "Đại biểu đã bị xóa")
     except:
         messages.error(request, "Quyền truy cập vào tài nguyên này bị từ chối")
 
@@ -263,7 +263,7 @@ def viewCandidates(request):
     context = {
         'candidates': candidates,
         'form1': form,
-        'page_title': 'Ứng cử viên'
+        'page_title': 'Đại biểu'
     }
     if request.method == 'POST':
         if form.is_valid():

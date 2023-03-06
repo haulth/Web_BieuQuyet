@@ -55,19 +55,17 @@
           <div class="modal-body">
             <form class="form-horizontal" enctype="multipart/form-data" method="POST" action="{% url 'viewCandidates' %}">
               {% csrf_token %}
-
-             
+            
               <div class="modal-body">
-                  {% for field in form1  %}
+                  {% for field in form1 %}
                   <div class="form-group has-feedback">
                       <span class="text-danger">{{field.errors}}</span>
                       {{field.label_tag}}
                       {{field}}
                   </div>
                   {% endfor %}
-
-
           </div>
+
           <div class="modal-footer">
             <button type="button" class="btn btn-danger btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Đóng</button>
             <button type="submit" class="btn btn-success btn-flat" name="add"><i class="fa fa-save"></i> Lưu</button>
@@ -115,7 +113,7 @@
               <input type="hidden" class="id" name="id">
               {% csrf_token %}
               <div class="text-center">
-                  <p>Xóa Ứng Cử Viên</p>
+                  <p>Xóa đại biểu</p>
                   <h2 class="bold fullname"></h2>
               </div>
           </div>

@@ -9,8 +9,10 @@ from django.http import JsonResponse, HttpResponse
 from django.conf import settings
 import json  # Not used
 from django_renderpdf.views import PDFView
-
 import time
+
+
+
 
 def find_n_winners(data, n):
     """Read More
@@ -30,7 +32,6 @@ def find_n_winners(data, n):
         final_list.append(this)
         candidate_data.remove(this_winner)
     return ", &nbsp;".join(final_list)
-
 
 class PrintView(PDFView):
     template_name = 'admin/print.html'
@@ -265,10 +266,12 @@ def viewCandidates(request):
         'form1': form,
         'page_title': 'Đại biểu'
     }
+    
     if request.method == 'POST':
         if form.is_valid():
             form = form.save()
             messages.success(request, "Ứng viên mới được tạo")
+            
         else:
             messages.error(request, "Lỗi biểu mẫu")
     return render(request, "admin/candidates.html", context)

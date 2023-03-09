@@ -30,7 +30,7 @@ def generate_ballot(display_controls=False):
     for position in positions:        
         if position.max_vote < 1:
             hide+=1
-            output='<h3 class="text-center" id="notshow">Chưa có bình chọn nào được hiển thị lúc này. Vui lòng chờ giây lát!</h3>'
+            output='<div class="text-center"><div class="col-xs-12"><div class="box box-solid"><div class="box-header with-border"><h3 class="box-title"><b>Tạm thời chưa có bình chọn nào!</b></h3></div><div class="box-body"><p>Vui lòng đợi trong giây lát!</p></div> <div ><button type="button" id="refresh" class="btn btn-success btn-sm btn-flat reset" data-desc="{position_name}"><i class="fa fa-refresh"></i> Làm mới</button></div></div></div></div>'
             break
         name = position.name
         position_name = slugify(name)

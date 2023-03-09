@@ -8,6 +8,7 @@
 <!-- set countdown timer -->
 <div style="text-align: center;" id="showtime">Thời gian bình chọn đếm ngược <span id="time">03:00</span></div>
 <script>
+
   function startTimer(duration, display) {
     var timer = duration, minutes, seconds;
     setInterval(function () {
@@ -37,12 +38,7 @@
     }, 1000);
     
   }
-  window.onload = function () {
-      var fiveMinutes = 60 * 1,
-          display = document.querySelector('#time');
-      startTimer(fiveMinutes, display);
-      
-  };
+
 
   //chặn tải lại trang
   function disableF5(e) { if ((e.which || e.keyCode) == 116 || (e.which || e.keyCode) == 82) e.preventDefault(); };
@@ -94,19 +90,29 @@ aria-hidden="true">&times;</button>
 {% block custom_js %}
 
 <script>
-  alert('Chào mừng bạn đến cuộc bình chọn, thời gian bình chọn của bạn là 3 phút.')
+  
 
-  {% comment %} function notshow() {
-    // nếu có elements nào có id là notshow thì tắt cả các nút
-    var elements = document.getElementById("notshow");
-    if (elements != null) {
-      elements.style.display = 'none';
-    }
-    else {
-      elements.style.display = 'none'
-    } {% endcomment %}
-
+  
+  //find elements id = refresh
+  var x = document.getElementById("refresh");
+  //if x exits, hide elements id = preview and id = voting-form-submit
+  if (x) {
+    document.getElementById("preview").style.display = "none";
+    document.getElementById("voting-form-submit").style.display = "none";
+    document.getElementById("showtime").style.display = "none";
   }
+  else {
+    alert('Chào mừng bạn đến cuộc bình chọn, thời gian bình chọn của bạn là 3 phút.');
+    //set countdown timer
+    window.onload = function () {
+      var fiveMinutes = 60 * 1,
+          display = document.querySelector('#time');
+      startTimer(fiveMinutes, display);
+      
+  };
+  }
+
+
   function lockVoting() {
     var form = document.getElementById("ballotForm");
     var elements = form.elements;
@@ -167,11 +173,17 @@ aria-hidden="true">&times;</button>
           }
 
       });
+      //ấn nút làm mới
+      $('#refresh').click(function(e) {
+        e.preventDefault();
+        //hỏi người dùng có muốn làm mới không       
+        window.location.reload();
+      });
 
   });
   block();
   disableF5(e);
-  {% comment %} notshow(); {% endcomment %}
+  
 </script>
 
 {% endblock custom_js %}

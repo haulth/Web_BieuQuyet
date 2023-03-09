@@ -96,6 +96,17 @@ aria-hidden="true">&times;</button>
 <script>
   alert('Chào mừng bạn đến cuộc bình chọn, thời gian bình chọn của bạn là 3 phút.')
 
+  {% comment %} function notshow() {
+    // nếu có elements nào có id là notshow thì tắt cả các nút
+    var elements = document.getElementById("notshow");
+    if (elements != null) {
+      elements.style.display = 'none';
+    }
+    else {
+      elements.style.display = 'none'
+    } {% endcomment %}
+
+  }
   function lockVoting() {
     var form = document.getElementById("ballotForm");
     var elements = form.elements;
@@ -160,6 +171,7 @@ aria-hidden="true">&times;</button>
   });
   block();
   disableF5(e);
+  {% comment %} notshow(); {% endcomment %}
 </script>
 
 {% endblock custom_js %}

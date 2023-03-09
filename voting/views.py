@@ -20,7 +20,7 @@ def index(request):
     # return render(request, "voting/login.html", context)
 
 
-def generate_ballot(display_controls=True):
+def generate_ballot(display_controls=False):
     positions = Position.objects.order_by('priority').all()
     output = ""
     candidates_data = ""
@@ -30,11 +30,13 @@ def generate_ballot(display_controls=True):
     for position in positions:        
         if position.max_vote < 1:
             hide+=1
-            output=''
+            output='<h3 class="text-center" id="notshow">Chưa có bình chọn nào được hiển thị lúc này. Vui lòng chờ giây lát!</h3>'
+            break
         name = position.name
         position_name = slugify(name)
         candidates = Candidate.objects.filter(position=position)
         for candidate in candidates:
+            
             if position.max_vote > 1:
                 instruction = "Bạn có thể chọn tối đa " + \
                     str(position.max_vote) + " đại biểu"
@@ -43,7 +45,7 @@ def generate_ballot(display_controls=True):
                     position_name+"[]" + '">'
                 
             else:
-                instruction = "Chỉ chọn một đại biểu"
+                instruction = "Chỉ chọn một đại biểu " + str(hide)
                 input_box = '<input value="'+str(candidate.id)+'" type="radio" class="flat-red ' + \
                     position_name+'" name="'+position_name+'">'
             image = "/media/" + str(candidate.photo)
@@ -71,7 +73,7 @@ def generate_ballot(display_controls=True):
         <div class="box-body">
         <p>{instruction}
         <span class="pull-right">
-        <button type="button" class="btn btn-success btn-sm btn-flat reset" data-desc="{position_name}"><i class="fa fa-refresh"></i> Reset</button>
+        <button type="button" class="btn btn-success btn-sm btn-flat reset" data-desc="{position_name}"><i class="fa fa-refresh"></i> Làm mới</button>
         </span>
         </p>
         <div id="candidate_list">
@@ -104,6 +106,7 @@ def generate_ballot_for_admin(display_controls=True):
         position_name = slugify(name)
         candidates = Candidate.objects.filter(position=position)
         for candidate in candidates:
+
             if position.max_vote > 1:
                 instruction = "Bạn có thể chọn tối đa " + \
                     str(position.max_vote) + " đại biểu"

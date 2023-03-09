@@ -1,7 +1,81 @@
 {% extends 'root.html' %}
 {% block content %}
 <section class="content">
+
+<!-- tao form nhập thời gian -->
+<form id="vote_time_form" method="post" action="{% url 'save_vote_time' %}">
+  {% csrf_token %}
+  <div class="form-group">
+      <label for="vote_time">Chọn thời gian bầu cử:</label>
+      <input type="datetime-local" class="form-control" id="vote_time" name="vote_time">
+      
+  </div>  
+  <div class="form-group d-flex justify-content-start">
+    <button type="submit" class="btn btn-primary">Lưu thời gian bầu cử</button>
+    <button id="delete_vote_time" class="btn btn-danger ml-4">Xóa thời gian bầu cử</button>
+  </div>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  var isVoteTimeDeleted = false;  // Biến flag kiểm tra đã xóa thời gian bầu cử hay chưa
+
+  // Đăng ký sự kiện submit cho form
+  $('#vote_time_form').submit(function(event) {
+      event.preventDefault();  // Ngăn chặn chuyển trang khi submit form
+
+      // Lấy giá trị thời gian từ input
+      var voteTime = $('#vote_time').val();
+
+      // Gửi request lưu thông tin đến server bằng AJAX
+      $.ajax({
+          type: 'POST',
+          url: "{% url 'save_vote_time' %}",
+          data: {
+              csrfmiddlewaretoken: '{{ csrf_token }}',
+              vote_time: voteTime
+          },
+          success: function(response) {
+              if (!isVoteTimeDeleted) {  // Nếu chưa xóa thông tin thời gian bầu cử
+                  alert('Thời gian bầu cử đã được lưu!');
+                  location.reload();
+                  
+              }
+              
+          }
+          // error: function(response) {
+          //     alert('Có lỗi xảy ra khi lưu thời gian bầu cử!');
+          // }
+      });
+  });
+
+  
+  $(document).ready(function() {
+    // Đăng ký sự kiện click cho nút xóa
+    $('#delete_vote_time').click(function() {
+        // Gửi request xóa thông tin đến server bằng AJAX
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'delete_vote_time' %}",
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(response) {
+                alert('Thời gian bầu cử đã bị xóa!');
+                location.reload(); // Cập nhật lại trang web
+            }
+            // error: function(response) {
+            //     alert('Có lỗi xảy ra khi xóa thời gian bầu cử!');
+            // }
+        });
+    });
+  });
+
+</script>
+
+
   <div class="row">
+
 <div class="col-xs-12">
 <div class="box">
 <div class="box-header with-border">

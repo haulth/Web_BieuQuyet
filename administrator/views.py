@@ -7,11 +7,42 @@ from voting.forms import *
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponse
 from django.conf import settings
-import json  # Not used
+import re
 from django_renderpdf.views import PDFView
 import time
+from django.shortcuts import render
+from datetime import time,datetime
+from django.http import JsonResponse
+from datetime import datetime
+
+# def save_vote_time(request):
+#     if request.method == 'POST':
+#         vote_time_str = request.POST.get('vote_time')
+#         vote_time = datetime.strptime(vote_time_str, '%H:%M')
+#         vote_time_str = vote_time.strftime('%H:%M')
+#         with open('vote_time.txt', 'w') as f:
+#             f.write(vote_time_str)
+#         return JsonResponse({'success': True})
+#     return JsonResponse({'success': False})
+def save_vote_time(request):
+    if request.method == 'POST':
+        vote_time_str = request.POST.get('vote_time')
+        vote_datetime = datetime.strptime(vote_time_str, '%Y-%m-%dT%H:%M')
+        vote_time_str = vote_datetime.strftime('%Y-%m-%dT%H:%M')
+        with open('vote_time.txt', 'w') as f:
+            f.write(vote_time_str)
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
 
 
+
+def delete_vote_time(request):
+    if request.method == 'POST':
+        # Xóa thông tin thời gian bầu cử trong file
+        with open('vote_time.txt', 'w') as f:
+            f.write('')
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
 
 
 def find_n_winners(data, n):

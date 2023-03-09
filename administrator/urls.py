@@ -32,11 +32,8 @@ urlpatterns = [
     path('votes/view', views.viewVotes, name='viewVotes'),
     path('votes/reset/', views.resetVote, name='resetVote'),
     path('votes/print/', views.PrintView.as_view(), name='printResult'),
-
-
-    
-
-
+    path('save-vote-time/', views.save_vote_time, name='save_vote_time'),
+    path('delete_vote_time/', views.delete_vote_time, name='delete_vote_time'),
 
 
 ]

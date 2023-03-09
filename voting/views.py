@@ -28,10 +28,10 @@ def generate_ballot(display_controls=False):
     # return None
     hide = 0
     for position in positions:        
-        if position.max_vote < 1:
-            hide+=1
+        if positions.count() == hide:  
             output='<div class="text-center"><div class="col-xs-12"><div class="box box-solid"><div class="box-header with-border"><h3 class="box-title"><b>Tạm thời chưa có bình chọn nào!</b></h3></div><div class="box-body"><p>Vui lòng đợi trong giây lát!</p></div> <div ><button type="button" id="refresh" class="btn btn-success btn-sm btn-flat reset" data-desc="{position_name}"><i class="fa fa-refresh"></i> Làm mới</button></div></div></div></div>'
             break
+           
         name = position.name
         position_name = slugify(name)
         candidates = Candidate.objects.filter(position=position)
@@ -45,13 +45,17 @@ def generate_ballot(display_controls=False):
                     position_name+"[]" + '">'
                 
             else:
-                instruction = "Chỉ chọn một đại biểu " + str(hide)
-                input_box = '<input value="'+str(candidate.id)+'" type="radio" class="flat-red ' + \
-                    position_name+'" name="'+position_name+'">'
-            image = "/media/" + str(candidate.photo)
-            candidates_data = candidates_data + '<li>' + input_box + '<button type="button" class="btn btn-primary btn-sm btn-flat clist platform" data-fullname="'+candidate.fullname+'" data-bio="'+candidate.bio+'"><i class="fa fa-search"></i> Chi tiết</button><img src="' + \
-                image+'" height="100px" width="100px" class="clist"><span class="cname clist">' + \
-                candidate.fullname+'</span></li>'
+                if position.max_vote < 1:
+                    hide+=1
+                    output=""
+                else:
+                    instruction = "Chỉ chọn một đại biểu " + str(hide)
+                    input_box = '<input value="'+str(candidate.id)+'" type="radio" class="flat-red ' + \
+                        position_name+'" name="'+position_name+'">'
+                image = "/media/" + str(candidate.photo)
+                candidates_data = candidates_data + '<li>' + input_box + '<button type="button" class="btn btn-primary btn-sm btn-flat clist platform" data-fullname="'+candidate.fullname+'" data-bio="'+candidate.bio+'"><i class="fa fa-search"></i> Chi tiết</button><img src="' + \
+                    image+'" height="100px" width="100px" class="clist"><span class="cname clist">' + \
+                    candidate.fullname+'</span></li>'
         up = ''
         if position.priority == 1:
             up = 'disabled'

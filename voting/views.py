@@ -6,17 +6,16 @@ from django.utils.text import slugify
 from django.contrib import messages
 from django.conf import settings
 from django.http import JsonResponse
-import requests
-import json
+
 # Create your views here.
+from datetime import datetime
+from django.shortcuts import render
 
 
 def index(request):
     if not request.user.is_authenticated:
         return account_login(request)
     context = {}
-    
-    
     # return render(request, "voting/login.html", context)
 
 
@@ -28,29 +27,29 @@ def generate_ballot(display_controls=False):
     instruction = ""
     # return None
     hide = 0
-    for position in positions:                
+    for position in positions:
         if position.max_vote < 1:
-            hide+=1
+            hide += 1
         else:
             name = position.name
             position_name = slugify(name)
             candidates = Candidate.objects.filter(position=position)
-            for candidate in candidates:  
+            for candidate in candidates:
                 if position.max_vote > 1:
                     instruction = "Bạn có thể chọn tối đa " + \
                         str(position.max_vote) + " đại biểu"
                     input_box = '<input type="checkbox" value="'+str(candidate.id)+'" class="flat-red ' + \
                         position_name+'" name="' + \
                         position_name+"[]" + '">'
-                    
+
                 else:
-                    instruction = "Chỉ chọn một đại biểu "  
+                    instruction = "Chỉ chọn một đại biểu "
                     input_box = '<input value="'+str(candidate.id)+'" type="radio" class="flat-red ' + \
                         position_name+'" name="'+position_name+'">'
                 image = "/media/" + str(candidate.photo)
                 candidates_data = candidates_data + '<li>' + input_box + '<button type="button" class="btn btn-primary btn-sm btn-flat clist platform" data-fullname="'+candidate.fullname+'" data-bio="'+candidate.bio+'"><i class="fa fa-search"></i> Chi tiết</button><img src="' + \
                     image+'" height="100px" width="100px" class="clist"><span class="cname clist">' + \
-                        candidate.fullname+'</span></li>'
+                    candidate.fullname+'</span></li>'
             up = ''
             if position.priority == 1:
                 up = 'disabled'
@@ -89,8 +88,8 @@ def generate_ballot(display_controls=False):
             position.save()
             num = num + 1
             candidates_data = ''
-        if positions.count() == hide:  
-            output= '<div class="text-center"><div class="col-xs-12"><div class="box box-solid"><div class="box-header with-border"><h3 class="box-title"><b>Tạm thời chưa có bình chọn nào!</b></h3></div><div class="box-body"><p>Vui lòng đợi trong giây lát!</p></div> <div ><button type="button" id="refresh" class="btn btn-success btn-sm btn-flat reset" data-desc="{position_name}"><i class="fa fa-refresh"></i> Làm mới</button></div></div></div></div>' 
+        if positions.count() == hide:
+            output = '<div class="text-center"><div class="col-xs-12"><div class="box box-solid"><div class="box-header with-border"><h3 class="box-title"><b>Tạm thời chưa có bình chọn nào!</b></h3></div><div class="box-body"><p>Vui lòng đợi trong giây lát!</p></div> <div ><button type="button" id="refresh" class="btn btn-success btn-sm btn-flat reset" data-desc="{position_name}"><i class="fa fa-refresh"></i> Làm mới</button></div></div></div></div>'
             break
     return output
 
@@ -102,7 +101,7 @@ def generate_ballot_for_admin(display_controls=True):
     num = 1
     # return None
     hide = 0
-    for position in positions:        
+    for position in positions:
 
         name = position.name
         position_name = slugify(name)
@@ -115,7 +114,6 @@ def generate_ballot_for_admin(display_controls=True):
                 input_box = '<input type="checkbox" value="'+str(candidate.id)+'" class="flat-red ' + \
                     position_name+'" name="' + \
                     position_name+"[]" + '">'
-
 
             else:
                 if position.max_vote < 1:
@@ -167,6 +165,7 @@ def generate_ballot_for_admin(display_controls=True):
         num = num + 1
         candidates_data = ''
     return output
+
 
 def fetch_ballot(request):
     output = generate_ballot_for_admin(display_controls=True)
@@ -316,16 +315,31 @@ def verify_otp(request):
         return redirect(reverse('voterVerify'))
     return redirect(reverse('show_ballot'))
 
+# show form bình chọn và hiển thị thời gian
+
 
 def show_ballot(request):
+    with open('vote_time.txt', 'r') as f:
+        vote_time_str = f.read().strip()
+
+    # Chuyển đổi thời gian kết thúc bình chọn từ định dạng string sang datetime object
+    vote_time = datetime.fromisoformat(vote_time_str)
+
+    # Tính thời gian còn lại đến khi kết thúc bình chọn
+    time_left = vote_time - datetime.now()
+
+    # Tính toán số giờ, phút và giây từ đối tượng timedelta
+    hours, remainder = divmod(time_left.seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+
+    # Trả về thời gian còn lại dưới dạng chuỗi "giờ:phút:giây"
+    time_left_str = f"{int(time_left.days * 24 + hours)}:{minutes:02d}:{seconds:02d}"
+    # # Trả về time_left để hiển thị countdown trên giao diện
     if request.user.voter.voted:
         messages.error(request, "Bạn đã bình chọn rồi")
         return redirect(reverse('voterDashboard'))
     ballot = generate_ballot(display_controls=False)
-    context = {
-        'ballot': ballot
-    }
-    return render(request, "voting/voter/ballot.html", context)
+    return render(request, "voting/voter/ballot.html", {'ballot': ballot, 'time_left_str': time_left_str})
 
 
 def preview_vote(request):

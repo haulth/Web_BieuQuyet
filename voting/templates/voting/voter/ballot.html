@@ -1,50 +1,54 @@
 {% extends 'root.html' %}
-{% block content %}
 
+{% block content %}
 
 <section class="content">
   <h1 class="page-header text-center title"><b>{{ TITLE }}</b></h1>
+  
+  <p id="countdown-timer" style="text-align: center; color: blue;">
+    Thời gian còn lại: <span id="countdown"></span>
+  </p>
 
-<!-- set countdown timer -->
-<div style="text-align: center;" id="showtime">Thời gian bình chọn đếm ngược <span id="time">03:00</span></div>
 <script>
+  var timeLeftStr = '{{ time_left_str }}';
+  console.log(timeLeftStr)
+    var timeLeftParts = timeLeftStr.split(':');
+    var hoursLeft = parseInt(timeLeftParts[0]);
+    var minutesLeft = parseInt(timeLeftParts[1]);
+    var secondsLeft = parseInt(timeLeftParts[2]);
+    var endTime = new Date();
+    endTime.setHours(endTime.getHours() + hoursLeft);
+    endTime.setMinutes(endTime.getMinutes() + minutesLeft);
+    endTime.setSeconds(endTime.getSeconds() + secondsLeft);
 
-  function startTimer(duration, display) {
-    var timer = duration, minutes, seconds;
-    setInterval(function () {
-        minutes = parseInt(timer / 60, 10);
-        seconds = parseInt(timer % 60, 10);
+    // Cập nhật đồng hồ countdown mỗi giây
+    var countdownInterval = setInterval(function() {
+        var now = new Date().getTime();
+        var timeLeft = endTime - now;
 
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
+        // Tính toán giờ, phút, giây còn lại
+        var hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
-        display.textContent = minutes + ":" + seconds;
+        // Hiển thị đồng hồ countdown
+        var countdownElem = document.getElementById('countdown');
+        countdownElem.innerHTML = hours + " giờ " + minutes + " phút " + seconds + " giây";
 
-        if (--timer < 0) {
-            timer = duration;
-            alert('Hết thời gian bình chọn!');
-            timer = stop;
-            //window.location="https://www.google.com/";\
-            lockVoting();        
-            //test elements with id = showtime hide
-            //document.getElementById("showtime").style.display = "none";
-            // change text of elements with id = showtime
-            document.getElementById("showtime").innerHTML = "Đã hết thời gian bỏ phiếu";
-            document.getElementById("showtime").style.color = "red";
-            // hỏi khi người dùng tải lại trang
-
+        // Kiểm tra nếu thời gian còn lại đã hết, dừng đồng hồ countdown
+        if (timeLeft < 0) {
+            clearInterval(countdownInterval);
+            countdownElem.innerHTML = "<span style='color: red;'>Bình chọn đã kết thúc</span>";
 
         }
     }, 1000);
-    
+  //chặn tải lại trang
+  function disableF5(e) {
+    if ((e.which || e.keyCode) == 116 || (e.which || e.keyCode) == 82) {
+      e.preventDefault();
+    }
   }
 
-
-  //chặn tải lại trang
-  function disableF5(e) { if ((e.which || e.keyCode) == 116 || (e.which || e.keyCode) == 82) e.preventDefault(); };
-    $(document).ready(function(){
-        $(document).on("keydown", disableF5);
-    });
   function block(){
     // Sử dụng beforeunload để hỏi người dùng có muốn rời khỏi trang không
     window.addEventListener('beforeunload', function(e) {
@@ -89,10 +93,9 @@ aria-hidden="true">&times;</button>
 
 {% block custom_js %}
 
-<script>
-  
 
-  
+<script>
+
   //find elements id = refresh
   var x = document.getElementById("refresh");
   //if x exits, hide elements id = preview and id = voting-form-submit
@@ -107,7 +110,7 @@ aria-hidden="true">&times;</button>
     window.onload = function () {
       var fiveMinutes = 60 * 1,
           display = document.querySelector('#time');
-      startTimer(fiveMinutes, display);
+      // startTimer(fiveMinutes, display);
       
   };
   }

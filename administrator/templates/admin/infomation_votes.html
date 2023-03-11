@@ -17,16 +17,15 @@
             <th>Phần Trăm Đạt</th>
         </thead>
         <tbody>
-      {% for key, value in chart_data.items %}
-        
-      <tr>
-        <td>{{ value.candidates|safe}}</td>
-        <td>{{ value.votes }}</td>
-        <td>{{ value.percent }}</td>
-        
-       
-      </tr>
-      {% endfor %}      
+          {% for key, value in chart_data.items %}
+          {% for candidate_data in value.candidates %}
+            <tr>
+              <td>{{ candidate_data.name }}</td>
+              <td>{{ candidate_data.votes }}</td>
+              <td>{{ value.percent|first }}</td> <!-- lấy phần tử đầu tiên của list percent -->
+            </tr>
+          {% endfor %}
+        {% endfor %}  
   
                               </tbody>
     </table>

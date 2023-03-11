@@ -15,15 +15,7 @@ from datetime import time,datetime
 from django.http import JsonResponse
 from datetime import datetime
 
-# def save_vote_time(request):
-#     if request.method == 'POST':
-#         vote_time_str = request.POST.get('vote_time')
-#         vote_time = datetime.strptime(vote_time_str, '%H:%M')
-#         vote_time_str = vote_time.strftime('%H:%M')
-#         with open('vote_time.txt', 'w') as f:
-#             f.write(vote_time_str)
-#         return JsonResponse({'success': True})
-#     return JsonResponse({'success': False})
+
 def save_vote_time(request):
     if request.method == 'POST':
         vote_time_str = request.POST.get('vote_time')
@@ -130,33 +122,37 @@ def infoVoter(request):
     candidates = Candidate.objects.all()
     voters = Voter.objects.all()
     voted_voters = Voter.objects.filter(voted=1)
-    list_of_candidates = []
-    votes_count = []
     chart_data = {}
 
     for position in positions:
-        if position.max_vote > 1:            
+        if position.max_vote < 1:
+            pass
+            # votes_count = []
+            # candidates_data = []
+            # for candidate in Candidate.objects.filter(position=position):
+            #     votes = Votes.objects.filter(candidate=candidate).count()
+            #     votes_count.append(votes)
+            #     candidates_data.append({'name': candidate.fullname, 'votes': votes})
+            # chart_data[position] = {'candidates': candidates_data, 'votes': votes_count, 'percent': [(votes / voted_voters.count()) * 100 for votes in votes_count], 'pos_id': position.id}
+        else:
             votes_count = []
+            candidates_data = []
             for candidate in Candidate.objects.filter(position=position):
                 votes = Votes.objects.filter(candidate=candidate).count()
                 votes_count.append(votes)
-                chart_data[position] = {
-                'candidates': candidate.fullname,
-                'votes': votes_count,
-                'percent': [(votes / voted_voters.count()) * 100 for votes in votes_count],
-                'pos_id': position.id
-            }
+                candidates_data.append({'name': candidate.fullname, 'votes': votes})
+            chart_data[position] = {'candidates': candidates_data, 'votes': votes_count, 'percent': [(votes / voted_voters.count()) * 100 for votes in votes_count], 'pos_id': position.id}
 
     context = {
         'position_count': positions.count(),
         'candidate_count': candidates.count(),
         'voters_count': voters.count(),
         'voted_voters_count': voted_voters.count(),
-        'positions': positions,
         'chart_data': chart_data,
         'page_title': "Thống kê bầu cử"
     }
     return render(request, 'admin/infomation_votes.html', context)
+
 
 def dashboard(request):
     positions = Position.objects.all().order_by('priority')

@@ -1,6 +1,11 @@
 from django.urls import path
 from . import views
+from . import consumers
 
+
+websocket_urlpatterns = [
+    path('ws/some_path/', consumers.SomeConsumer.as_asgi()),
+]
 
 urlpatterns = [
     path('', views.dashboard, name="adminDashboard"),
@@ -35,5 +40,6 @@ urlpatterns = [
     path('save-vote-time/', views.save_vote_time, name='save_vote_time'),
     path('delete_vote_time/', views.delete_vote_time, name='delete_vote_time'),
     path('infovoter/', views.infoVoter, name="infoVoter"),
+ 
 
 ]

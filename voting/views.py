@@ -184,6 +184,39 @@ def generate_otp():
 
 
 def dashboard(request):
+    positions = Position.objects.all().order_by('priority')
+    candidates = Candidate.objects.all()
+    voters = Voter.objects.all()
+    voted_voters = Voter.objects.filter(voted=1)
+    chart_data = {}
+
+    for position in positions:
+        if position.max_vote < 1:
+            continue
+            
+        total_votes = Votes.objects.filter(candidate__position=position).count()
+        candidates_data = []
+        for candidate in Candidate.objects.filter(position=position):
+            votes = Votes.objects.filter(candidate=candidate).count()
+            percent = (votes / total_votes) * 100 if total_votes > 0 else 0
+            candidates_data.append({'name': candidate.fullname, 'votes': votes, 'percent': percent})
+
+        chart_data[position] = {'candidates': candidates_data, 'pos_id': position.id}
+    with open('vote_time.txt', 'r') as f:
+        vote_time_str = f.read().strip()
+    # Chuyển đổi thời gian kết thúc bình chọn từ định dạng string sang datetime object
+    vote_time = datetime.fromisoformat(vote_time_str)
+
+    # Tính thời gian còn lại đến khi kết thúc bình chọn
+    time_left = vote_time - datetime.now()
+
+    # Tính toán số giờ, phút và giây từ đối tượng timedelta
+    hours, remainder = divmod(time_left.seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+
+    # Trả về thời gian còn lại dưới dạng chuỗi "giờ:phút:giây"
+    time_left_str = f"{int(time_left.days * 24 + hours)}:{minutes:02d}:{seconds:02d}"
+
     user = request.user
     # * Check if this voter has been verified
     if user.voter.otp is None or user.voter.verified == False:
@@ -199,6 +232,13 @@ def dashboard(request):
             # To display election result or candidates I voted for ?
             context = {
                 'my_votes': Votes.objects.filter(voter=user.voter),
+                'position_count': positions.count(),
+                'candidate_count': candidates.count(),
+                'voters_count': voters.count(),
+                'voted_voters_count': voted_voters.count(),
+                'chart_data': chart_data,
+                'time_left_str': time_left_str,
+                
             }
             return render(request, "voting/voter/result.html", context)
         else:
@@ -316,7 +356,6 @@ def verify_otp(request):
     return redirect(reverse('show_ballot'))
 
 # show form bình chọn và hiển thị thời gian
-
 
 def show_ballot(request):
     with open('vote_time.txt', 'r') as f:

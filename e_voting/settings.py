@@ -142,7 +142,7 @@ ALLOWED_HOSTS = []
 ALLOWED_HOSTS = ["*"]
 
 #link ngrok cần thêm
-CSRF_TRUSTED_ORIGINS = ['https://e706-2402-9d80-3e2-92d2-903e-6dfd-44a5-9faf.ap.ngrok.io']
+CSRF_TRUSTED_ORIGINS = ['https://bd43-2001-ee0-52d1-fe50-bc19-8dca-fbd4-78f9.ap.ngrok.io']
 
 STATIC_URL = '/static/'
 

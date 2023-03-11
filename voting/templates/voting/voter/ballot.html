@@ -108,7 +108,7 @@ aria-hidden="true">&times;</button>
     document.getElementById("showtime").style.display = "none";
   }
   else {
-    alert('Chào mừng bạn đến cuộc bình chọn, thời gian bình chọn của bạn là 3 phút.');
+    alert('Chào mừng bạn đến cuộc bình chọn, thời gian bình chọn của bạn là {{ time_left_str }}.');
     //set countdown timer
     window.onload = function () {
       var fiveMinutes = 60 * 1,
@@ -222,12 +222,12 @@ aria-hidden="true">&times;</button>
 
 <!-- Preview -->
 <div class="modal fade" id="preview_modal">
+  
   <div class="modal-dialog">
       <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span></button>
-
             <h4 class="modal-title">Xem Lại Bình Chọn</h4>
 
           </div>

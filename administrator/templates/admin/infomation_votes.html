@@ -3,39 +3,68 @@
 {% block content %}
 
 <section class="content">
-    <div class="row">
-  <div class="col-xs-12">
-  {% comment %} <div class="box">
-    <div class="box-header with-border">
-      <a href="#reset" data-toggle="modal" class="btn btn-danger btn-sm btn-flat"><i class="fa fa-refresh"></i> Đặt Lại</a>
-    </div> {% endcomment %}
-  <div class="box-body">
-    <table id="example1" class="table table-bordered table-hover table-striped">
-        <thead style="background-color: #222D32; color:white;">
-            <th>Tên Đại Biểu</th>
-            <th>Số Phiếu Đạt</th>
-            <th>Phần Trăm Đạt</th>
-        </thead>
-        <tbody>
-          {% for key, value in chart_data.items %}
-          {% for candidate_data in value.candidates %}
-            <tr>
-              <td>{{ candidate_data.name }}</td>
-              <td>{{ candidate_data.votes }}</td>
-              <td>{{ value.percent|first }}</td> <!-- lấy phần tử đầu tiên của list percent -->
-            </tr>
-          {% endfor %}
-        {% endfor %}  
+  <div class="row">
+      <div class="col-xs-12">
+          <div class="box">
+                  <h4 class="box-title" style="text-align: center; color: blueviolet;">Tổng số lá phiếu: {{ voted_voters_count }}/{{ voters_count }}</h4>
+                  <h6 class="box-title" style="text-align: center; color: rgb(62, 113, 206);">Thời gian bỏ phiếu: {{ time_left_str }}</h6>
+              <div class="box-body">
+                  <table id="example1" class="table table-bordered table-hover table-striped">
+                      <thead style="background-color: #222D32; color:white;">
+                          <th>Tên Đại Biểu</th>
+                          <th>Số Phiếu Đạt</th>
+                          <th>Phần Trăm Đạt</th>
+                      </thead>
+                      <tbody>
+                          {% for key, value in chart_data.items %}
+                              {% for candidate_data in value.candidates %}
+                                  <tr>
+                                      <td>{{ candidate_data.name }}</td>
+                                      <td>{{ candidate_data.votes }}</td>
+                                      <td>{{ candidate_data.percent|floatformat:2 }}%</td>
+                                  </tr>
+                              {% endfor %}
+                          {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+      </div>
+  </div>
+  <script>
+    // Khởi tạo WebSocket
+    var socket = new WebSocket('ws://' + window.location.host + '/ws/updates/');
   
-                              </tbody>
-    </table>
-  </div>
-  </div>
-  </div>
-  </div>
-  </section>
+    // Khi kết nối đến WebSocket thành công
+    socket.onopen = function(event) {
+      console.log('WebSocket connected');
+    };
+  
+    // Khi nhận được tin nhắn từ WebSocket server
+    socket.onmessage = function(event) {
+      // Cập nhật dữ liệu trên trang web của bạn với dữ liệu mới nhất
+      var data = JSON.parse(event.data);
+      console.log('Received data:', data);
+      // Cập nhật nội dung trang web ở đây
+      $("#your-element").html(data.your_data);
+    };
+  
+    // Khi có lỗi xảy ra với WebSocket
+    socket.onerror = function(event) {
+      console.error('WebSocket error:', event);
+    };
+  
+    // Khi kết nối đến WebSocket bị đóng
+    socket.onclose = function(event) {
+      console.warn('WebSocket closed:', event);
+    };
+  </script>
+</section>
+
+
+{% endblock content %} 
 
 
 
 
-{% endblock content %}
+

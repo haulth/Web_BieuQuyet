@@ -38,7 +38,10 @@
         // Kiểm tra nếu thời gian còn lại đã hết, dừng đồng hồ countdown
         if (timeLeft < 0) {
             clearInterval(countdownInterval);
-            countdownElem.innerHTML = "<span style='color: red;'>Bình chọn đã kết thúc</span>";
+            //elements id = countdown-timer ẩn đi
+            document.getElementById("countdown-timer").innerHTML = "<span style='color: red;'>Bình chọn đã kết thúc</span>";   
+            lockVoting();        
+            //countdownElem.innerHTML = "<span style='color: red;'>Bình chọn đã kết thúc</span>";
 
         }
     }, 1000);
@@ -120,9 +123,13 @@ aria-hidden="true">&times;</button>
     var form = document.getElementById("ballotForm");
     var elements = form.elements;
     for (var i = 0, len = elements.length; i < len; ++i) {
-        elements[i].disabled = true;
+        //nếu elements id = refresh thì không ẩn
+        if (elements[i].id != "refresh") {
+          elements[i].disabled = true;
         //ẩn elements
         elements[i].style.display = 'none';
+        }
+        
     }
   }
 

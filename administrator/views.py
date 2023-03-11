@@ -135,24 +135,26 @@ def infoVoter(request):
     chart_data = {}
 
     for position in positions:
-        list_of_candidates = []
-        votes_count = []
-        for candidate in Candidate.objects.filter(position=position):
-            list_of_candidates.append(candidate.fullname)
-            votes = Votes.objects.filter(candidate=candidate).count()
-            votes_count.append(votes)
-        chart_data[position] = {
-            'candidates': list_of_candidates,
-            'votes': votes_count,
-            'pos_id': position.id
-        }
+        if position.max_vote > 1:            
+            votes_count = []
+            for candidate in Candidate.objects.filter(position=position):
+                votes = Votes.objects.filter(candidate=candidate).count()
+                votes_count.append(votes)
+                chart_data[position] = {
+                'candidates': candidate.fullname,
+                'votes': votes_count,
+                'percent': [(votes / voted_voters.count()) * 100 for votes in votes_count],
+                'pos_id': position.id
+            }
 
     context = {
         'position_count': positions.count(),
         'candidate_count': candidates.count(),
-        'voter_count': voters.count(),
-        'voted_voter_count': voted_voters.count(),
+        'voters_count': voters.count(),
+        'voted_voters_count': voted_voters.count(),
+        'positions': positions,
         'chart_data': chart_data,
+        'page_title': "Thống kê bầu cử"
     }
     return render(request, 'admin/infomation_votes.html', context)
 

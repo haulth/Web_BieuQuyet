@@ -1,41 +1,40 @@
-@@ -0,0 +1,42 @@
 {% extends 'root.html' %}
 {% load static %}
 {% block content %}
 
-<table>
-    <tr>
-      <th>Column 1</th>
-      <th>Column 2</th>
-      <th>Column 3</th>
-    </tr>
-    <tr>
-      <td>Row 1, Column 1</td>
-      <td>Row 1, Column 2</td>
-      <td>Row 1, Column 3</td>
-    </tr>
-    <tr>
-      <td>Row 2, Column 1</td>
-      <td>Row 2, Column 2</td>
-      <td>Row 2, Column 3</td>
-    </tr>
-    <tr>
-      <td>Row 3, Column 1</td>
-      <td>Row 3, Column 2</td>
-      <td>Row 3, Column 3</td>
-    </tr>
-    <tr>
-      <td>Row 4, Column 1</td>
-      <td>Row 4, Column 2</td>
-      <td>Row 4, Column 3</td>
-    </tr>
-    <tr>
-      <td>Row 5, Column 1</td>
-      <td>Row 5, Column 2</td>
-      <td>Row 5, Column 3</td>
-    </tr>
-  </table>
-
+<section class="content">
+    <div class="row">
+  <div class="col-xs-12">
+  {% comment %} <div class="box">
+    <div class="box-header with-border">
+      <a href="#reset" data-toggle="modal" class="btn btn-danger btn-sm btn-flat"><i class="fa fa-refresh"></i> Đặt Lại</a>
+    </div> {% endcomment %}
+  <div class="box-body">
+    <table id="example1" class="table table-bordered table-hover table-striped">
+        <thead style="background-color: #222D32; color:white;">
+            <th>Tên Đại Biểu</th>
+            <th>Số Phiếu Đạt</th>
+            <th>Phần Trăm Đạt</th>
+        </thead>
+        <tbody>
+      {% for key, value in chart_data.items %}
+        
+      <tr>
+        <td>{{ value.candidates|safe}}</td>
+        <td>{{ value.votes }}</td>
+        <td>{{ value.percent }}</td>
+        
+       
+      </tr>
+      {% endfor %}      
+  
+                              </tbody>
+    </table>
+  </div>
+  </div>
+  </div>
+  </div>
+  </section>
 
 
 

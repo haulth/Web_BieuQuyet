@@ -216,7 +216,9 @@ def dashboard(request):
 
     # Trả về thời gian còn lại dưới dạng chuỗi "giờ:phút:giây"
     time_left_str = f"{int(time_left.days * 24 + hours)}:{minutes:02d}:{seconds:02d}"
-
+    #nếu thời gian còn lại nhỏ hơn 0 thì trả về chuỗi "00:00:00"
+    if time_left.days < 0:
+        time_left_str = "00:00:00"
     user = request.user
     # * Check if this voter has been verified
     if user.voter.otp is None or user.voter.verified == False:

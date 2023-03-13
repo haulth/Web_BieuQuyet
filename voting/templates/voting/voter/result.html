@@ -13,8 +13,10 @@ aria-hidden="true">&times;</button>
 
 <div class="text-center">
   <h3>Bạn đã bỏ phiếu cho cuộc bình chọn này!</h3>
+  <h4 class="box-title" style="text-align: center; color: blueviolet;">Tổng số lá phiếu: {{ voted_voters_count }}/{{ voters_count }}</h4>
+  <h5 class="box-title" id="time" style="text-align: center; color: rgb(62, 113, 206);">Thời gian bỏ phiếu: {{ time_left_str }}</h5>
   <a href="#view" data-toggle="modal" class="btn btn-flat btn-danger btn-lg"><i class="fa fa-eye"></i> Xem Lựa Chọn Của Bạn</a>
-  <a href="#showtable" data-toggle="modal" class="btn btn-flat btn-danger btn-lg"><i class="fa fa-eye"></i> Xem Kết Quả</a>
+  {% comment %} <a href="#showtable" data-toggle="modal" class="btn btn-flat btn-danger btn-lg"><i class="fa fa-eye"></i> Xem Kết Quả</a> {% endcomment %}
 </div>
     </div>
   </div>
@@ -91,6 +93,14 @@ aria-hidden="true">&times;</button>
         </div>
     </div>
     <script>
+      //nếu time_left_str == "00:00:00" thì id=time hiện hết thời gian bỏ phiếu
+      var time = document.getElementById("time");
+      if (time.innerHTML == "Thời gian bỏ phiếu: 00:00:00") {
+        time.innerHTML = "Hết thời gian bỏ phiếu";
+        time.style.color = "red";
+      }
+
+        
     </script>
 </section>
 

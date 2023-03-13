@@ -124,13 +124,15 @@ def infoVoter(request):
 
     # Tính thời gian còn lại đến khi kết thúc bình chọn
     time_left = vote_time - datetime.now()
-
     # Tính toán số giờ, phút và giây từ đối tượng timedelta
     hours, remainder = divmod(time_left.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
 
     # Trả về thời gian còn lại dưới dạng chuỗi "giờ:phút:giây"
     time_left_str = f"{int(time_left.days * 24 + hours)}:{minutes:02d}:{seconds:02d}"
+    #nếu thời gian còn lại nhỏ hơn 0 thì trả về chuỗi "00:00:00"
+    if time_left.days < 0:
+        time_left_str = "00:00:00"
     print(time_left_str)
 
     positions = Position.objects.all().order_by('priority')

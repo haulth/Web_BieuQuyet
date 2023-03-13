@@ -108,7 +108,16 @@ aria-hidden="true">&times;</button>
     document.getElementById("showtime").style.display = "none";
   }
   else {
-    alert('Chào mừng bạn đến cuộc bình chọn, thời gian bình chọn của bạn là {{ time_left_str }}.');
+    if (time_left_str  == "00:00:00") {
+      alert('Chào mừng bạn đến cuộc bình chọn, thời gian bình chọn của bạn đã hết.');    
+      
+    }
+    else {
+      alert('Chào mừng bạn đến cuộc bình chọn, thời gian bình chọn của bạn là {{ time_left_str }}.');
+       
+    }
+    
+
     //set countdown timer
     window.onload = function () {
       var fiveMinutes = 60 * 1,
@@ -117,7 +126,14 @@ aria-hidden="true">&times;</button>
       
   };
   }
+  if (timeLeft < 0) {
+    clearInterval(countdownInterval);
+    //elements id = countdown-timer ẩn đi
+    document.getElementById("countdown-timer").innerHTML = "<span style='color: red;'>Bình chọn đã kết thúc</span>";   
+    lockVoting();        
+    //countdownElem.innerHTML = "<span style='color: red;'>Bình chọn đã kết thúc</span>";
 
+}
 
   function lockVoting() {
     var form = document.getElementById("ballotForm");

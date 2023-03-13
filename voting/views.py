@@ -376,6 +376,8 @@ def show_ballot(request):
     # Trả về thời gian còn lại dưới dạng chuỗi "giờ:phút:giây"
     time_left_str = f"{int(time_left.days * 24 + hours)}:{minutes:02d}:{seconds:02d}"
     # # Trả về time_left để hiển thị countdown trên giao diện
+    if time_left.days < 0:
+        time_left_str = f"00:00:00"
     if request.user.voter.voted:
         messages.error(request, "Bạn đã bình chọn rồi")
         return redirect(reverse('voterDashboard'))

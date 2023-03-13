@@ -1,0 +1,259 @@
+{% extends 'root.html' %}
+{% block content %}
+<section class="content">
+
+<!-- tao form nhập thời gian -->
+<form id="vote_time_form" method="post" action="{% url 'save_vote_time' %}">
+  {% csrf_token %}
+  <div class="form-group">
+      <label for="vote_time">Chọn thời gian bầu cử:</label>
+      <input type="datetime-local" class="form-control" id="vote_time" name="vote_time">
+      
+  </div>  
+  <div class="form-group d-flex justify-content-start">
+    <button type="submit" class="btn btn-primary">Lưu thời gian bầu cử</button>
+    <button id="delete_vote_time" class="btn btn-danger ml-4">Xóa thời gian bầu cử</button>
+  </div>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  var isVoteTimeDeleted = false;  // Biến flag kiểm tra đã xóa thời gian bầu cử hay chưa
+
+  // Đăng ký sự kiện submit cho form
+  $('#vote_time_form').submit(function(event) {
+      event.preventDefault();  // Ngăn chặn chuyển trang khi submit form
+
+      // Lấy giá trị thời gian từ input
+      var voteTime = $('#vote_time').val();
+
+      // Gửi request lưu thông tin đến server bằng AJAX
+      $.ajax({
+          type: 'POST',
+          url: "{% url 'save_vote_time' %}",
+          data: {
+              csrfmiddlewaretoken: '{{ csrf_token }}',
+              vote_time: voteTime
+          },
+          success: function(response) {
+              if (!isVoteTimeDeleted) {  // Nếu chưa xóa thông tin thời gian bầu cử
+                  alert('Thời gian bầu cử đã được lưu!');
+                  location.reload();
+                  
+              }
+              
+          }
+          // error: function(response) {
+          //     alert('Có lỗi xảy ra khi lưu thời gian bầu cử!');
+          // }
+      });
+  });
+
+  
+  $(document).ready(function() {
+    // Đăng ký sự kiện click cho nút xóa
+    $('#delete_vote_time').click(function() {
+        // Gửi request xóa thông tin đến server bằng AJAX
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'delete_vote_time' %}",
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(response) {
+                alert('Thời gian bầu cử đã bị xóa!');
+                location.reload(); // Cập nhật lại trang web
+            }
+            // error: function(response) {
+            //     alert('Có lỗi xảy ra khi xóa thời gian bầu cử!');
+            // }
+        });
+    });
+  });
+
+</script>
+
+
+  <div class="row">
+
+<div class="col-xs-12">
+<div class="box">
+<div class="box-header with-border">
+  <a href="#addnew" data-toggle="modal" class="btn btn-success btn-sm btn-flat"><i
+          class="fa fa-plus"></i> Thêm Mới</a>
+</div>
+<div class="box-body">
+  <table id="example1" class="table table-bordered table-hover table-striped">
+    <thead style="background-color: #222D32; color:white;">
+          <th>Tên</th>
+          <th>Số lượt bình chọn tối đa</th>
+          <th>Ưu Tiên</th>
+          <th>Hành Động</th>
+      </thead>
+      <tbody>
+    {% for position in positions %}
+      
+    <tr>
+      <td>{{ position.name }}</td>
+      <td>{{ position.max_vote }}</td>
+      <td>{{ position.priority }}</td>
+      
+      <td>
+        <button class='btn btn-primary btn-sm edit btn-flat' data-id='{{ position.id }}'><i class='fa fa-edit'></i> Chỉnh Sửa</button>
+        <button class='btn btn-danger btn-sm delete btn-flat' data-id='{{ position.id }}'><i class='fa fa-trash'></i> Xóa</button>
+      </td>
+    </tr>
+    {% endfor %}      
+
+                            </tbody>
+  </table>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+{% endblock content %}
+
+{% block modal %}
+<div class="modal fade" id="addnew">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title"><b>Thêm Loại Bình Chọn</b></h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal" method="POST" action="{% url 'viewPositions' %}">
+              {% csrf_token %}
+
+             
+              <div class="modal-body">
+                  {% for field in form1  %}
+                  <div class="form-group has-feedback">
+                      <span class="text-danger">{{field.errors}}</span>
+                      {{field.label_tag}}
+                      {{field}}
+                  </div>
+                  {% endfor %}
+
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Đóng</button>
+            <button type="submit" class="btn btn-success btn-flat" name="add"><i class="fa fa-save"></i> Lưu</button>
+          </div></form></div></div></div></div>
+
+<!-- Edit -->
+<div class="modal fade" id="edit">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title"><b>Chỉnh Sửa</b></h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal" method="POST" action="{% url 'updatePosition' %}">
+              {% csrf_token %}
+              <input type="hidden" class="id" name="id">
+              <div class="form-group">
+                <label for="name" class="col-sm-3 control-label">Tên</label>
+
+                <div class="col-sm-9">
+                  <input type="text" class="form-control" id="name" name="name">
+                </div>
+            </div>
+
+            <div class="form-group">
+              <label for="max_vote" class="col-sm-3 control-label">Số lượt bình chọn tối đa</label>
+
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="max_vote" name="max_vote">
+              </div>
+          </div>
+             
+
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Đóng</button>
+            <button type="submit" class="btn btn-success btn-flat" name="edit"><i class="fa fa-check-square-o"></i> Cập Nhật</button>
+            </form>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Delete -->
+<div class="modal fade" id="delete">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title"><b>Đang xóa...</b></h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal" method="POST" action="{% url 'deletePosition' %}">
+              <input type="hidden" class="id" name="id">
+              {% csrf_token %}
+              <div class="text-center">
+                  <p>Xóa Loại Bỏ Phiếu</p>
+                  <h2 class="bold fullname"></h2>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal"><i class="fa fa-close"></i> Đóng</button>
+            <button type="submit" class="btn btn-danger btn-flat" name="delete"><i class="fa fa-trash"></i> Xóa</button>
+            </form>
+          </div>
+      </div>
+  </div>
+</div>
+
+{% endblock modal %}
+
+
+
+{% block custom_js %}
+  
+<script>
+  $(function() {
+      $(document).on('click', '.edit', function(e) {
+          e.preventDefault();
+          $('#edit').modal('show');
+          var id = $(this).data('id');
+          getRow(id);
+      });
+
+      $(document).on('click', '.delete', function(e) {
+          e.preventDefault();
+          $('#delete').modal('show');
+          var id = $(this).data('id');
+          getRow(id);
+      });
+
+
+  });
+
+  function getRow(id) {
+      $.ajax({
+          type: 'GET',
+          url: '{% url "viewPosition" %}',
+          data: {
+              id: id
+          },
+          dataType: 'json',
+          success: function(response) {
+              $('.id').val(response.id);
+              $('#max_vote').val(response.max_vote);
+              $('#name').val(response.name);
+              $('.fullname').html(response.name);
+          }
+      });
+  }
+  </script>
+{% endblock custom_js %}
+  

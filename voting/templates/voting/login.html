@@ -1,0 +1,40 @@
+{% extends "voting/base.html" %}
+{% block content %}
+
+
+    <div class="login-box">
+        <div class="login-logo">
+            <b>Hệ Thống Bỏ Phiếu</b>
+        </div>
+
+        <div class="login-box-body">
+            <!-- <p class="login-box-msg">Sign in to start your session</p> -->
+
+            <form action="{% url 'account_login' %}" method="POST">
+                {% csrf_token %}
+                
+                
+                <div class="form-group has-feedback">
+                    <input type="text" class="form-control" name="email" placeholder="Email" required>
+                    <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                </div>
+                <div class="form-group has-feedback">
+                    <input type="password" class="form-control" name="password" placeholder="Mật khẩu" required>
+                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                </div>
+                <div class="row">
+                    
+                    <div class="col-xs-5">
+                        <button type="submit" class="btn btn-success btn-block btn-flat" name="login"><i
+                                class="fa fa-sign-in"></i> Đăng Nhập</button>
+                    </div>
+                    <div class="pull-right col-xs-5">
+                        <a  class="btn btn-warning btn-block btn-flat" href="{% url 'account_register' %}"><i class="fa fa-user-plus"></i> Đăng Ký</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+            </div>
+
+ 
+{% endblock content %} 
